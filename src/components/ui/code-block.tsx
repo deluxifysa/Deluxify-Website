@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import React, { useEffect, useState } from "react"
+import React from "react"
 
 export type CodeBlockProps = {
   children?: React.ReactNode
@@ -32,43 +32,19 @@ export type CodeBlockCodeProps = {
 
 function CodeBlockCode({
   code,
-  language = "tsx",
-  theme = "github-light",
   className,
   ...props
 }: CodeBlockCodeProps) {
-  const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function highlight() {
-      if (!code) {
-        setHighlightedHtml("<pre><code></code></pre>")
-        return
-      }
-
-      const { codeToHtml } = await import("shiki")
-      const html = await codeToHtml(code, { lang: language, theme })
-      setHighlightedHtml(html)
-    }
-    highlight()
-  }, [code, language, theme])
-
-  const classNames = cn(
-    "w-full overflow-x-auto text-[13px] [&>pre]:px-4 [&>pre]:py-4",
-    className
-  )
-
-  // SSR fallback: render plain code if not hydrated yet
-  return highlightedHtml ? (
+  return (
     <div
-      className={classNames}
-      dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+      className={cn(
+        "w-full overflow-x-auto text-[13px]",
+        className
+      )}
       {...props}
-    />
-  ) : (
-    <div className={classNames} {...props}>
-      <pre>
-        <code>{code}</code>
+    >
+      <pre className="px-4 py-4">
+        <code className="text-white/80 font-mono">{code}</code>
       </pre>
     </div>
   )
