@@ -7,6 +7,7 @@ import { ServicesOverview } from "@/components/home/ServicesOverview";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { PricingSection } from "@/components/home/PricingSection";
+import { CodeShowcase } from "@/components/home/CodeShowcase";
 import { FAQSection } from "@/components/home/FAQSection";
 import { CTASection } from "@/components/home/CTASection";
 
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-0 right-0 z-50">
         <MorphPanel />
       </div>
       <HeroSection />
@@ -29,6 +30,7 @@ export default function HomePage() {
       <HowItWorks />
       <TestimonialsSection />
       <PricingSection />
+      <CodeShowcase />
       <FAQSection />
       <CTASection />
     </>

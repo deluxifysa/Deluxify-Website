@@ -86,11 +86,11 @@ export function Navbar() {
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
-            <Link href="/contact" className="btn-secondary text-sm px-4 py-2">
-              Book a Demo
-            </Link>
-            <Link href="/contact" className="btn-primary text-sm px-4 py-2">
-              Get Started
+            <Link
+              href="/book-call"
+              className="text-sm font-semibold px-4 py-2 rounded-xl text-white transition-all duration-200 bg-black shadow-[0_0_14px_rgba(0,0,0,0.25)] hover:shadow-[0_0_20px_rgba(0,0,0,0.35)] dark:bg-gradient-to-r dark:from-[#2F8F89] dark:to-[#3B82F6] dark:shadow-[0_0_14px_rgba(63,224,208,0.3)] dark:hover:shadow-[0_0_22px_rgba(63,224,208,0.45)]"
+            >
+              Book a Call
             </Link>
           </div>
 
@@ -136,12 +136,12 @@ export function Navbar() {
                   </Link>
                 );
               })}
-              <div className="pt-3 border-t border-black/[0.08] dark:border-white/10 flex flex-col gap-2">
-                <Link href="/contact" className="btn-secondary text-sm justify-center">
-                  Book a Demo
-                </Link>
-                <Link href="/contact" className="btn-primary text-sm justify-center">
-                  Get Started
+              <div className="pt-3 border-t border-black/[0.08] dark:border-white/10">
+                <Link
+                  href="/book-call"
+                  className="flex items-center justify-center text-sm font-semibold px-4 py-3 rounded-xl text-white transition-all duration-200 bg-black shadow-[0_0_14px_rgba(0,0,0,0.2)] dark:bg-gradient-to-r dark:from-[#2F8F89] dark:to-[#3B82F6] dark:shadow-[0_0_14px_rgba(63,224,208,0.25)]"
+                >
+                  Book a Call
                 </Link>
               </div>
             </div>

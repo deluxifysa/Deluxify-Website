@@ -47,7 +47,7 @@ export function BookingFlow() {
     <section className="relative min-h-screen pt-28 pb-20 overflow-hidden">
       {!isLight && (
         <>
-          <GradientOrb className="-top-20 left-1/4 -translate-x-1/2" color="teal" size="lg" />
+          <GradientOrb className="-top-20 left-1/4 -translate-x-1/2" color="mixed" size="lg" />
           <GradientOrb className="top-1/2 right-0 translate-x-1/3" color="blue" size="md" />
         </>
       )}

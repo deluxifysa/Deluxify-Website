@@ -98,7 +98,7 @@ export function Footer() {
             <div className="space-y-2 text-sm text-white/40">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-white/50" />
-                <span>Johannesburg, South Africa</span>
+                <span>Bloemfontein, South Africa</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-white/50" />

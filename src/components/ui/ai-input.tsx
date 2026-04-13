@@ -3,6 +3,7 @@
 import React from "react"
 import { cx } from "class-variance-authority"
 import { AnimatePresence, motion } from "motion/react"
+import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -191,6 +192,11 @@ export function MorphPanel() {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null)
 
+  const { theme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+  React.useEffect(() => setMounted(true), [])
+  const isLight = mounted && theme === "light"
+
   const [showForm, setShowForm] = React.useState(false)
   const [successFlag, setSuccessFlag] = React.useState(false)
 
@@ -233,13 +239,16 @@ export function MorphPanel() {
         ref={wrapperRef}
         data-panel
         className={cx(
-          "bg-background relative bottom-8 z-3 flex flex-col items-center overflow-hidden border max-sm:bottom-5"
+          "relative z-3 flex flex-col items-center overflow-hidden border",
+          isLight ? "bg-black border-black/20 text-white" : "bg-background"
         )}
         initial={false}
         animate={{
           width: showForm ? FORM_WIDTH : "auto",
           height: showForm ? FORM_HEIGHT : 44,
           borderRadius: showForm ? 14 : 20,
+          x: showForm ? -12 : 0,
+          y: showForm ? -12 : 0,
         }}
         transition={{
           type: "spring",
@@ -261,7 +270,10 @@ export function MorphPanel() {
 function DockBar() {
   const { showForm, triggerOpen } = useFormContext()
   return (
-    <footer className="mt-auto flex h-[44px] items-center justify-center whitespace-nowrap select-none">
+    <footer
+      className="mt-auto flex h-[44px] items-center justify-center whitespace-nowrap select-none cursor-pointer"
+      onClick={!showForm ? triggerOpen : undefined}
+    >
       <div className="flex items-center justify-center gap-2 px-3 max-sm:h-10 max-sm:px-2">
         <div className="flex w-fit items-center gap-2">
           <AnimatePresence mode="wait">
@@ -289,7 +301,7 @@ function DockBar() {
 
         <Button
           type="button"
-          className="flex h-fit flex-1 justify-end rounded-full px-2 !py-0.5"
+          className="flex h-fit flex-1 justify-end rounded-full px-2 !py-0.5 hover:bg-transparent"
           variant="ghost"
           onClick={triggerOpen}
         >
@@ -340,12 +352,12 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
                 AI Input
               </p>
               <button
-                type="submit"
-                ref={btnRef}
-                className="text-foreground right-4 mt-1 flex -translate-y-[3px] cursor-pointer items-center justify-center gap-1 rounded-[12px] bg-transparent pr-1 text-center select-none"
+                type="button"
+                onClick={triggerClose}
+                className="text-foreground mt-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md bg-transparent opacity-50 hover:opacity-100 transition-opacity mr-1"
+                aria-label="Close"
               >
-                <KeyHint>⌘</KeyHint>
-                <KeyHint className="w-fit">Enter</KeyHint>
+                ✕
               </button>
             </div>
             <textarea
@@ -378,17 +390,5 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
   )
 }
 
-function KeyHint({ children, className }: { children: string; className?: string }) {
-  return (
-    <kbd
-      className={cx(
-        "text-foreground flex h-6 w-fit items-center justify-center rounded-sm border px-[6px] font-sans",
-        className
-      )}
-    >
-      {children}
-    </kbd>
-  )
-}
 
 export default MorphPanel
