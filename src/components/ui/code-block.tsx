@@ -32,19 +32,28 @@ export type CodeBlockCodeProps = {
 
 function CodeBlockCode({
   code,
+  theme = "github-dark-dimmed",
   className,
   ...props
 }: CodeBlockCodeProps) {
+  const isLight = theme.includes("light")
+
   return (
     <div
       className={cn(
         "w-full overflow-x-auto text-[13px]",
+        isLight ? "bg-[#f6f8fa]" : "bg-[#1c1c1e]",
         className
       )}
       {...props}
     >
       <pre className="px-4 py-4">
-        <code className="text-white/80 font-mono">{code}</code>
+        <code
+          className="font-mono leading-relaxed"
+          style={{ color: isLight ? "#24292e" : "#adbac7" }}
+        >
+          {code}
+        </code>
       </pre>
     </div>
   )

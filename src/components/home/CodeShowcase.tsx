@@ -135,8 +135,8 @@ export function CodeShowcase() {
             <CodeBlock className={cn(
               "shadow-2xl",
               isLight
-                ? "border-black/12 shadow-black/10"
-                : "border-white/10 shadow-black/50"
+                ? "border-black/[0.12] shadow-black/10 bg-[#f6f8fa]"
+                : "border-white/10 shadow-black/50 bg-[#1c1c1e]"
             )}>
               {/* Title bar */}
               <CodeBlockGroup className={cn(
