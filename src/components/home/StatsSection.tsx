@@ -33,7 +33,7 @@ function StatCard({ value, suffix, label, desc, index, start, isLight }: typeof 
   const count = useCountUp(value, 1.5, start);
   return (
     <AnimatedSection delay={index * 0.1} className="text-center p-6">
-      <div className="text-5xl md:text-6xl font-bold mb-2">
+      <div className="text-4xl md:text-6xl font-bold mb-2">
         <span className="gradient-text">{count}</span>
         <span className="text-brand-400">{suffix}</span>
       </div>

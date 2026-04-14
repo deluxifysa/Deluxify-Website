@@ -63,7 +63,7 @@ function FAQItem({
       <button
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "w-full text-left px-6 py-5 flex items-center justify-between gap-6 transition-all duration-200 rounded-2xl border",
+          "w-full text-left px-4 py-4 sm:px-6 sm:py-5 flex items-center justify-between gap-3 sm:gap-6 transition-all duration-200 rounded-2xl border",
           isLight
             ? open
               ? "rounded-b-none bg-black/[0.04] border-black/10"
@@ -145,7 +145,7 @@ export function FAQSection() {
           >
             FAQ
           </span>
-          <h2 className={`text-4xl md:text-5xl font-bold tracking-tight mb-4 ${isLight ? "text-black" : ""}`}>
+          <h2 className={`text-3xl md:text-5xl font-bold tracking-tight mb-4 ${isLight ? "text-black" : ""}`}>
             Common questions,{" "}
             <span className={isLight ? "text-black" : "gradient-text"}>straight answers</span>
           </h2>

@@ -37,7 +37,7 @@ export function AboutHero() {
           >
             Who We Are
           </span>
-          <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8 leading-[1.05] ${isLight ? "text-black" : ""}`}>
+          <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8 leading-[1.05] ${isLight ? "text-black" : ""}`}>
             Bloemfontein roots.{" "}
             <span className={isLight ? "text-black" : "gradient-text"}>Global standards.</span>
           </h1>

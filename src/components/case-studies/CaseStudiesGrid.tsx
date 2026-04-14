@@ -101,14 +101,14 @@ export function CaseStudiesGrid() {
               <div className={`h-px w-full mb-16 ${isLight ? "bg-black/10" : "bg-white/8"}`} />
             )}
 
-            <div className="grid gap-12 lg:grid-cols-3 xl:gap-20 mb-16">
+            <div className="grid gap-8 lg:grid-cols-3 xl:gap-20 mb-16">
               {/* Left — image + quote + author (spans 2 cols) */}
               <div className={`flex flex-col gap-8 sm:flex-row lg:col-span-2 lg:border-r lg:pr-12 xl:pr-20 ${isLight ? "border-black/10" : "border-white/8"}`}>
                 {/* Portrait */}
                 <img
                   src={cs.photo}
                   alt={cs.author}
-                  className="aspect-[4/5] h-full w-full max-w-[200px] rounded-2xl object-cover shrink-0"
+                  className="aspect-[4/5] w-full max-w-[160px] sm:max-w-[200px] rounded-2xl object-cover shrink-0 mx-auto sm:mx-0"
                 />
 
                 {/* Quote + author */}
@@ -136,7 +136,7 @@ export function CaseStudiesGrid() {
               </div>
 
               {/* Right — 2 stats */}
-              <div className="flex gap-10 self-center lg:flex-col">
+              <div className="flex gap-6 self-center lg:flex-col">
                 {cs.stats.map((stat) => (
                   <div key={stat.label} className="flex flex-col gap-1">
                     <p className={`text-4xl sm:text-5xl font-semibold tracking-tight ${isLight ? "text-black" : "text-white"}`}>

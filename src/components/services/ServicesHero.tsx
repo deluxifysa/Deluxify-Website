@@ -33,7 +33,7 @@ export function ServicesHero() {
             <Sparkles className="w-3 h-3" />
             Our Services
           </span>
-          <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-balance ${isLight ? "text-black" : ""}`}>
+          <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-balance ${isLight ? "text-black" : ""}`}>
             Every service your business needs{" "}
             <span className={isLight ? "text-black" : "gradient-text"}>under one roof.</span>
           </h1>

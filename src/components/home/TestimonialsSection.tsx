@@ -78,9 +78,9 @@ export function TestimonialsSection() {
           >
             Client Results
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
             Trusted by businesses that{" "}
-            <span className="font-[family-name:var(--font-caveat)] text-white uppercase text-5xl md:text-6xl">Demand Results</span>
+            <span className="font-[family-name:var(--font-caveat)] text-white uppercase text-4xl md:text-6xl">Demand Results</span>
           </h2>
           <p className="text-white/50 text-lg max-w-2xl mx-auto">
             Our work is measured in revenue recovered, hours reclaimed, and
@@ -91,7 +91,7 @@ export function TestimonialsSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {testimonials.map((t, i) => (
             <AnimatedSection key={t.id} delay={i * 0.1}>
-              <GlowCard glowColor={t.glowColor} className="p-7 flex flex-col gap-5 h-full">
+              <GlowCard glowColor={t.glowColor} className="p-5 sm:p-7 flex flex-col gap-5 h-full">
                 {/* Stars */}
                 <div className="flex items-center gap-1">
                   {Array.from({ length: t.rating }).map((_, si) => (

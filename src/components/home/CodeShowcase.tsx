@@ -73,9 +73,9 @@ export function CodeShowcase() {
           >
             Developer-First
           </span>
-          <h2 className={`text-4xl md:text-5xl font-bold tracking-tight mt-4 ${isLight ? "text-black" : ""}`}>
+          <h2 className={`text-3xl md:text-5xl font-bold tracking-tight mt-4 ${isLight ? "text-black" : ""}`}>
             Powerful AI.{" "}
-            <span className={`font-[family-name:var(--font-caveat)] text-5xl md:text-6xl uppercase ${isLight ? "text-black" : "gradient-text"}`}>
+            <span className={`font-[family-name:var(--font-caveat)] text-4xl md:text-6xl uppercase ${isLight ? "text-black" : "gradient-text"}`}>
               Simple to ship.
             </span>
           </h2>
@@ -86,7 +86,7 @@ export function CodeShowcase() {
 
         
         {/* Main two-col layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
 
           {/* Left — features */}
           <AnimatedSection direction="left" className="space-y-6">

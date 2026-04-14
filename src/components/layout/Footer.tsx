@@ -46,7 +46,7 @@ export function Footer() {
       {/* Email capture */}
       <div className="border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className={`p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 rounded-2xl border ${
+          <div className={`p-5 sm:p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 rounded-2xl border ${
             isLight
               ? "bg-white border-black/10 shadow-[0_4px_24px_rgba(0,0,0,0.08)]"
               : "glass-card gradient-border"
@@ -59,7 +59,7 @@ export function Footer() {
                 Weekly insights on AI automation, business growth, and industry news.
               </p>
             </div>
-            <form className="flex w-full md:w-auto gap-3 min-w-0">
+            <form className="flex flex-col sm:flex-row w-full md:w-auto gap-3 min-w-0">
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -79,7 +79,7 @@ export function Footer() {
 
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-10">
 
           {/* Brand */}
           <div className="lg:col-span-2">

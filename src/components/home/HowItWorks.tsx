@@ -38,7 +38,7 @@ function StepCard({ step, isLight }: { step: typeof steps[0]; isLight: boolean }
 
   return (
     <div
-      className={`relative flex-shrink-0 w-[320px] md:w-[400px] border ${borderColor} bg-transparent`}
+      className={`relative w-full border ${borderColor} bg-transparent`}
       style={{ borderRadius: 0 }}
     >
       {/* Dot pattern background */}
@@ -51,7 +51,7 @@ function StepCard({ step, isLight }: { step: typeof steps[0]; isLight: boolean }
       <div className="absolute -bottom-1.5 -right-1.5 h-3 w-3" style={{ background: accentColor }} />
 
       {/* Content */}
-      <div className="relative z-10 p-8 md:p-10 flex flex-col gap-6 h-full">
+      <div className="relative z-10 p-6 md:p-10 flex flex-col gap-6 h-full">
         {/* Step number + icon row */}
         <div className="flex items-start justify-between">
           <div
@@ -112,9 +112,9 @@ export function HowItWorks() {
           >
             The Process
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
             From idea to impact in{" "}
-            <span className="font-[family-name:var(--font-caveat)] text-white uppercase text-5xl md:text-6xl">Three Steps</span>
+            <span className="font-[family-name:var(--font-caveat)] text-white uppercase text-4xl md:text-6xl">Three Steps</span>
           </h2>
           <p className="text-white/50 text-lg max-w-2xl mx-auto">
             A battle-tested process that delivers measurable results within weeks, not months.

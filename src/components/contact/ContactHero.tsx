@@ -31,9 +31,9 @@ export function ContactHero() {
           >
             Get In Touch
           </span>
-          <h1 className={`text-5xl md:text-6xl font-bold tracking-tight mb-6 ${isLight ? "text-black" : ""}`}>
+          <h1 className={`text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6 ${isLight ? "text-black" : ""}`}>
             Let&apos;s build something{" "}
-            <span className={`font-[family-name:var(--font-caveat)] text-6xl md:text-7xl uppercase ${isLight ? "text-black" : "gradient-text"}`}>powerful.</span>
+            <span className={`font-[family-name:var(--font-caveat)] text-4xl sm:text-6xl md:text-7xl uppercase ${isLight ? "text-black" : "gradient-text"}`}>powerful.</span>
           </h1>
           <p className={`text-lg max-w-2xl mx-auto ${isLight ? "text-black/55" : "text-white/60"}`}>
             Book a strategy call, send us a message, or chat on WhatsApp.

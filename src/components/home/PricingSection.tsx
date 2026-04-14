@@ -63,7 +63,7 @@ export function PricingSection() {
           >
             How It Works
           </span>
-          <h2 className={`text-4xl md:text-5xl font-bold tracking-tight mb-4 ${isLight ? "text-black" : ""}`}>
+          <h2 className={`text-3xl md:text-5xl font-bold tracking-tight mb-4 ${isLight ? "text-black" : ""}`}>
             One consultation.{" "}
             <span className={isLight ? "text-black" : "gradient-text"}>A plan built for you.</span>
           </h2>
@@ -118,14 +118,14 @@ export function PricingSection() {
               coneSpread={25}
               colors={isLight ? ["#555555", "#333333", "#111111"] : ["#3FE0D0", "#2F8F89", "#1a5c58"]}
             >
-            <div className="p-8 md:p-10 relative overflow-hidden">
+            <div className="p-5 sm:p-8 md:p-10 relative overflow-hidden">
 
               <div className="mb-6">
                 <span className={`text-xs font-bold uppercase tracking-widest ${isLight ? "text-black/50" : "text-[#3FE0D0]"}`}>
                   Consultation Fee
                 </span>
                 <div className="flex items-baseline gap-2 mt-2 mb-1">
-                  <span className={`text-5xl font-bold ${isLight ? "text-black" : ""}`}>R 650</span>
+                  <span className={`text-4xl sm:text-5xl font-bold ${isLight ? "text-black" : ""}`}>R 650</span>
                   <span className={`text-sm ${isLight ? "text-black/40" : "text-white/40"}`}>once-off</span>
                 </div>
                 <p className={`text-sm ${isLight ? "text-black/55" : "text-white/50"}`}>

@@ -37,9 +37,9 @@ export function CareersHero() {
           >
             Careers at Deluxify
           </span>
-          <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.05] ${isLight ? "text-black" : ""}`}>
+          <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.05] ${isLight ? "text-black" : ""}`}>
             Build the future of{" "}
-            <span className={`font-[family-name:var(--font-caveat)] text-6xl md:text-7xl lg:text-8xl uppercase ${isLight ? "text-black" : "gradient-text"}`}>
+            <span className={`font-[family-name:var(--font-caveat)] text-4xl sm:text-6xl md:text-7xl lg:text-8xl uppercase ${isLight ? "text-black" : "gradient-text"}`}>
               African AI.
             </span>
           </h1>

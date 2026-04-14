@@ -73,7 +73,7 @@ export function HeroSection() {
           {/* Headline */}
           <motion.h1
             variants={item}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-balance max-w-5xl mb-6 text-black dark:text-white"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-balance max-w-5xl mb-6 text-black dark:text-white"
           >
             Luxury Technology.{" "}
             <span className="gradient-text">Intelligent Growth.</span>

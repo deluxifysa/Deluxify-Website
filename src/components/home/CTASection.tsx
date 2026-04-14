@@ -32,7 +32,7 @@ export function CTASection() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <div
-            className={`p-12 md:p-16 rounded-2xl border transition-colors duration-300 ${
+            className={`p-6 sm:p-10 md:p-16 rounded-2xl border transition-colors duration-300 ${
               isLight
                 ? "bg-white border-black/10 shadow-[0_8px_48px_rgba(0,0,0,0.08)]"
                 : "glass-card gradient-border"
@@ -49,7 +49,7 @@ export function CTASection() {
               Your Next Move
             </span>
 
-            <h2 className={`text-4xl md:text-6xl font-bold tracking-tight mb-6 text-balance ${isLight ? "text-black" : ""}`}>
+            <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-6 text-balance ${isLight ? "text-black" : ""}`}>
               Ready to build something
               <span className={isLight ? " text-black" : " gradient-text"}> powerful?</span>
             </h2>

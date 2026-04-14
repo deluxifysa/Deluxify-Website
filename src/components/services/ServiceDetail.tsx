@@ -371,7 +371,7 @@ export function ServiceDetail() {
                   key={service.id}
                   id={service.id}
                   className={cn(
-                    "grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-stretch",
+                    "grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-stretch",
                     idx % 2 === 1 && "lg:[direction:rtl] *:[direction:ltr]"
                   )}
                 >
@@ -388,12 +388,12 @@ export function ServiceDetail() {
                       >
                         <service.icon className="w-7 h-7 text-white" />
                       </div>
-                      <h2 className={`text-3xl md:text-4xl font-bold ${isLight ? "text-black" : ""}`}>{service.title}</h2>
+                      <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${isLight ? "text-black" : ""}`}>{service.title}</h2>
                     </div>
                     <p className={`leading-relaxed mb-8 ${isLight ? "text-black/60" : "text-white/60"}`}>{service.description}</p>
 
                     {/* Outcome metrics */}
-                    <div className="grid grid-cols-3 gap-4 mt-auto">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-auto">
                       {service.outcomes.map((outcome) => {
                         const glowCfg = isLight ? lightGlow : (categoryGlowConfig[category.id] ?? lightGlow);
                         return (
@@ -430,7 +430,7 @@ export function ServiceDetail() {
                           glowIntensity={0.9}
                           className={isLight ? "!border-black/10" : ""}
                         >
-                          <div className="p-8">
+                          <div className="p-5 sm:p-8">
                             <h3 className={`text-sm font-semibold uppercase tracking-widest mb-6 ${isLight ? "text-black/40" : "text-white/40"}`}>
                               What&apos;s Included
                             </h3>
