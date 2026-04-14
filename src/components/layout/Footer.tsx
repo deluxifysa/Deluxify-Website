@@ -38,6 +38,28 @@ export function Footer() {
   useEffect(() => setMounted(true), []);
   const isLight = mounted && theme === "light";
 
+  const [email, setEmail] = useState("");
+  const [subState, setSubState] = useState<"idle" | "loading" | "success" | "duplicate" | "error">("idle");
+
+  async function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    setSubState("loading");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (data.alreadySubscribed) return setSubState("duplicate");
+      if (!res.ok) throw new Error();
+      setSubState("success");
+      setEmail("");
+    } catch {
+      setSubState("error");
+    }
+  }
+
   return (
     <footer
       className="border-t border-white/10 transition-colors duration-300"
@@ -59,20 +81,42 @@ export function Footer() {
                 Weekly insights on AI automation, business growth, and industry news.
               </p>
             </div>
-            <form className="flex flex-col sm:flex-row w-full md:w-auto gap-3 min-w-0">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className={`flex-1 md:w-64 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all ${
-                  isLight
-                    ? "bg-black/[0.04] border border-black/10 text-black placeholder:text-black/35"
-                    : "bg-white/5 border border-white/10 text-white placeholder:text-white/30"
-                }`}
-              />
-              <button type="submit" className="btn-primary whitespace-nowrap">
-                Subscribe
-              </button>
-            </form>
+            {subState === "success" ? (
+              <p className="text-sm font-medium text-green-400">
+                ✓ You&apos;re subscribed! Welcome to the curve.
+              </p>
+            ) : subState === "duplicate" ? (
+              <p className="text-sm font-medium text-white/50">
+                You&apos;re already subscribed.
+              </p>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row w-full md:w-auto gap-3 min-w-0">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className={`flex-1 md:w-64 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all ${
+                    isLight
+                      ? "bg-black/[0.04] border border-black/10 text-black placeholder:text-black/35"
+                      : "bg-white/5 border border-white/10 text-white placeholder:text-white/30"
+                  }`}
+                />
+                <button
+                  type="submit"
+                  disabled={subState === "loading"}
+                  className="btn-primary whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {subState === "loading" ? "Subscribing…" : "Subscribe"}
+                </button>
+                {subState === "error" && (
+                  <p className="text-xs text-red-400 mt-1 sm:mt-0 sm:self-center">
+                    Something went wrong. Try again.
+                  </p>
+                )}
+              </form>
+            )}
           </div>
         </div>
       </div>

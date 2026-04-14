@@ -33,3 +33,13 @@ create table if not exists bookings (
 
 -- Only allow inserts from the service role (API routes); no client reads
 alter table bookings enable row level security;
+
+-- ─── Newsletter subscribers ──────────────────────────────────────────────────
+create table if not exists newsletter_subscribers (
+  id         uuid primary key default gen_random_uuid(),
+  email      text not null unique,
+  created_at timestamptz not null default now()
+);
+
+-- Only allow inserts from the service role (API routes); no client reads
+alter table newsletter_subscribers enable row level security;
