@@ -135,7 +135,7 @@ export function ConfirmationStep({ isLight, booking }: Props) {
 
         {/* Reference */}
         <p className={`text-xs ${isLight ? "text-black/30" : "text-white/30"}`}>
-          Reference: DLX-{Date.now().toString(36).toUpperCase().slice(-8)}
+          Reference: {booking.reference}
         </p>
       </div>
     </AnimatedSection>

@@ -54,11 +54,20 @@ export function ContactSection() {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setSubmitted(true);
-    console.log("Form data:", data);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Submission failed");
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Contact form error:", err);
+      alert("Something went wrong. Please try again or contact us directly.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass = isLight

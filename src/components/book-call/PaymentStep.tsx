@@ -44,15 +44,37 @@ export function PaymentStep({ isLight, booking, onBack, onPay }: Props) {
 
   const canPay = cardNumber.replace(/\s/g, "").length === 16 && expiry.length >= 4 && cvv.length >= 3 && cardName.trim();
 
-  function handlePay(e: React.FormEvent) {
+  async function handlePay(e: React.FormEvent) {
     e.preventDefault();
     if (!canPay) return;
     setLoading(true);
-    // Simulate payment processing — replace with real gateway
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      // Simulate payment processing — replace with real gateway (e.g. Paystack, Peach Payments)
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: booking.name,
+          email: booking.email,
+          company: booking.company,
+          topic: booking.topic,
+          date: booking.date,
+          time: booking.time,
+          reference: booking.reference,
+        }),
+      });
+      if (!res.ok) throw new Error("Booking save failed");
+
       onPay();
-    }, 2000);
+    } catch (err) {
+      console.error("Payment/booking error:", err);
+      alert("Payment processed but we couldn't save your booking. Please contact us with your reference.");
+      onPay(); // still advance so user sees confirmation
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

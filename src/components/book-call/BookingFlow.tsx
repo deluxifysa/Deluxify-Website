@@ -17,6 +17,7 @@ export type BookingData = {
   email: string;
   company: string;
   topic: string;
+  reference: string;
 };
 
 const steps = [
@@ -35,7 +36,8 @@ export function BookingFlow() {
   const [booking, setBooking] = useState<Partial<BookingData>>({});
 
   function handleScheduleDone(data: Pick<BookingData, "date" | "time" | "name" | "email" | "company" | "topic">) {
-    setBooking((prev) => ({ ...prev, ...data }));
+    const reference = "DLX-" + Date.now().toString(36).toUpperCase().slice(-8);
+    setBooking((prev) => ({ ...prev, ...data, reference }));
     setStep(2);
   }
 
