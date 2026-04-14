@@ -259,7 +259,10 @@ export function MorphPanel() {
     // On mobile: align button to bottom-right corner with padding.
     // On desktop: keep centered inside the full-size container.
     <div
-      className="flex items-end justify-end pb-10 pr-8 sm:items-center sm:justify-center sm:pb-0 sm:pr-0"
+      className={cx(
+        "flex items-end justify-end sm:items-center sm:justify-center sm:pb-0 sm:pr-0",
+        !showForm && isMobile && "pb-10 pr-8"
+      )}
       style={{ width: FORM_WIDTH, height: FORM_HEIGHT }}
     >
       <motion.div
