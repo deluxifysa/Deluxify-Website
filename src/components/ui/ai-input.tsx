@@ -183,6 +183,8 @@ interface ContextShape {
   successFlag: boolean
   triggerOpen: () => void
   triggerClose: () => void
+  labelVisible: boolean
+  isMobile: boolean
 }
 
 const FormContext = React.createContext({} as ContextShape)
@@ -199,6 +201,23 @@ export function MorphPanel() {
 
   const [showForm, setShowForm] = React.useState(false)
   const [successFlag, setSuccessFlag] = React.useState(false)
+  const [labelVisible, setLabelVisible] = React.useState(true)
+  const [isMobile, setIsMobile] = React.useState(false)
+
+  // Detect mobile (client-side only)
+  React.useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener("resize", check)
+    return () => window.removeEventListener("resize", check)
+  }, [])
+
+  // After 2 s on mobile, hide the "Ask AI" label — leaving just the orb
+  React.useEffect(() => {
+    if (!isMobile) return
+    const t = setTimeout(() => setLabelVisible(false), 2000)
+    return () => clearTimeout(t)
+  }, [isMobile])
 
   const triggerClose = React.useCallback(() => {
     setShowForm(false)
@@ -229,12 +248,20 @@ export function MorphPanel() {
   }, [showForm, triggerClose])
 
   const ctx = React.useMemo(
-    () => ({ showForm, successFlag, triggerOpen, triggerClose }),
-    [showForm, successFlag, triggerOpen, triggerClose]
+    () => ({ showForm, successFlag, triggerOpen, triggerClose, labelVisible, isMobile }),
+    [showForm, successFlag, triggerOpen, triggerClose, labelVisible, isMobile]
   )
 
+  // Icon-only state: mobile + label hidden + form closed
+  const iconOnly = isMobile && !labelVisible && !showForm
+
   return (
-    <div className="flex items-center justify-center" style={{ width: FORM_WIDTH, height: FORM_HEIGHT }}>
+    // On mobile: align button to bottom-right corner with padding.
+    // On desktop: keep centered inside the full-size container.
+    <div
+      className="flex items-end justify-end pb-6 pr-5 sm:items-center sm:justify-center sm:pb-0 sm:pr-0"
+      style={{ width: FORM_WIDTH, height: FORM_HEIGHT }}
+    >
       <motion.div
         ref={wrapperRef}
         data-panel
@@ -244,9 +271,9 @@ export function MorphPanel() {
         )}
         initial={false}
         animate={{
-          width: showForm ? FORM_WIDTH : "auto",
+          width: showForm ? FORM_WIDTH : iconOnly ? 44 : "auto",
           height: showForm ? FORM_HEIGHT : 44,
-          borderRadius: showForm ? 14 : 20,
+          borderRadius: showForm ? 14 : iconOnly ? 22 : 20,
           x: showForm ? -12 : 0,
           y: showForm ? -12 : 0,
         }}
@@ -268,13 +295,18 @@ export function MorphPanel() {
 }
 
 function DockBar() {
-  const { showForm, triggerOpen } = useFormContext()
+  const { showForm, triggerOpen, labelVisible, isMobile } = useFormContext()
+  const iconOnly = isMobile && !labelVisible && !showForm
+
   return (
     <footer
       className="mt-auto flex h-[44px] items-center justify-center whitespace-nowrap select-none cursor-pointer"
       onClick={!showForm ? triggerOpen : undefined}
     >
-      <div className="flex items-center justify-center gap-2 px-3 max-sm:h-10 max-sm:px-2">
+      <div className={cx(
+        "flex items-center justify-center gap-2",
+        iconOnly ? "px-0" : "px-3 max-sm:px-2"
+      )}>
         <div className="flex w-fit items-center gap-2">
           <AnimatePresence mode="wait">
             {showForm ? (
@@ -299,14 +331,25 @@ function DockBar() {
           </AnimatePresence>
         </div>
 
-        <Button
-          type="button"
-          className="flex h-fit flex-1 justify-end rounded-full px-2 !py-0.5 hover:bg-transparent"
-          variant="ghost"
-          onClick={triggerOpen}
-        >
-          <span className="truncate">Ask AI</span>
-        </Button>
+        <AnimatePresence>
+          {!iconOnly && (
+            <motion.div
+              initial={{ opacity: 1, width: "auto" }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.4 }}
+              className="overflow-hidden"
+            >
+              <Button
+                type="button"
+                className="flex h-fit flex-1 justify-end rounded-full px-2 !py-0.5 hover:bg-transparent"
+                variant="ghost"
+                onClick={triggerOpen}
+              >
+                <span className="truncate">Ask AI</span>
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </footer>
   )
