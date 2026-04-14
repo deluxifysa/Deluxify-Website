@@ -36,11 +36,12 @@ export function Navbar() {
     <>
       <motion.header
         className={cn(
-          "fixed top-4 z-50",
+          "fixed top-4 left-0 right-0 z-50 overflow-hidden",
           scrolled
             ? "bg-white/90 dark:bg-surface-950/85 backdrop-blur-xl border border-black/[0.08] dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.10)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
             : "bg-transparent border-transparent"
         )}
+        initial={{ left: 0, right: 0, borderRadius: 0 }}
         animate={{
           left: scrolled ? 16 : 0,
           right: scrolled ? 16 : 0,
@@ -116,7 +117,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-x-0 top-16 z-40 bg-white/97 dark:bg-surface-900/95 backdrop-blur-xl border-b border-black/[0.08] dark:border-white/10 md:hidden"
+            className="fixed inset-x-0 top-20 z-40 bg-white/97 dark:bg-surface-900/95 backdrop-blur-xl border-b border-black/[0.08] dark:border-white/10 md:hidden"
           >
             <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
               {navLinks.map((link) => {
