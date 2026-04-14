@@ -65,7 +65,8 @@ export function HeroSection() {
           <motion.div variants={item}>
             <span className="section-tag mb-6">
               <Sparkles className="w-3 h-3" />
-              South Africa&apos;s Premium AI &amp; Technology Partner
+              <span className="sm:hidden">RSA&apos;s Premium AI &amp; Technology Partner</span>
+              <span className="hidden sm:inline">South Africa&apos;s Premium AI &amp; Technology Partner</span>
             </span>
           </motion.div>
 
