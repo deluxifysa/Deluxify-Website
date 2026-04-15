@@ -86,7 +86,7 @@ export function Footer() {
                 ✓ You&apos;re subscribed! Welcome to the curve.
               </p>
             ) : subState === "duplicate" ? (
-              <p className="text-sm font-medium text-white/50">
+              <p className={`text-sm font-medium ${isLight ? "text-black/50" : "text-white/50"}`}>
                 You&apos;re already subscribed.
               </p>
             ) : (

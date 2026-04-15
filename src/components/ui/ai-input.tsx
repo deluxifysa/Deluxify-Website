@@ -260,7 +260,7 @@ export function MorphPanel() {
     // On desktop: keep centered inside the full-size container.
     <div
       className={cx(
-        "flex items-end justify-end sm:items-center sm:justify-center sm:pb-0 sm:pr-0",
+        "flex items-end justify-end sm:items-end sm:justify-end sm:pb-10 sm:pr-8",
         !showForm && isMobile && "pb-10 pr-8"
       )}
       style={{ width: FORM_WIDTH, height: FORM_HEIGHT }}
@@ -359,20 +359,58 @@ function DockBar() {
 }
 
 const FORM_WIDTH = 360
-const FORM_HEIGHT = 200
+const FORM_HEIGHT = 400
 
-function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; onSuccess: () => void }) {
+function InputForm({ ref }: { ref: React.Ref<HTMLTextAreaElement>; onSuccess: () => void }) {
   const { triggerClose, showForm } = useFormContext()
   const btnRef = React.useRef<HTMLButtonElement>(null)
+  const scrollRef = React.useRef<HTMLDivElement>(null)
+
+  const [message, setMessage] = React.useState("")
+  const [reply, setReply] = React.useState("")
+  const [status, setStatus] = React.useState<"idle" | "loading" | "error">("idle")
+
+  // Reset when panel closes
+  React.useEffect(() => {
+    if (!showForm) {
+      setMessage("")
+      setReply("")
+      setStatus("idle")
+    }
+  }, [showForm])
+
+  // Auto-scroll reply area
+  React.useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [reply])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    onSuccess()
+    if (!message.trim() || status === "loading") return
+    setStatus("loading")
+    setReply("")
+    try {
+      const res = await fetch("/api/ask-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Failed")
+      setReply(data.reply)
+      setStatus("idle")
+      setMessage("")
+    } catch {
+      setReply("Sorry, something went wrong. Please try again.")
+      setStatus("error")
+    }
   }
 
   function handleKeys(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Escape") triggerClose()
-    if (e.key === "Enter" && e.metaKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       btnRef.current?.click()
     }
@@ -393,9 +431,10 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
             transition={{ type: "spring", stiffness: 550 / SPEED_FACTOR, damping: 45, mass: 0.7 }}
             className="flex h-full flex-col p-1"
           >
-            <div className="flex justify-between py-1">
-              <p className="text-foreground z-2 ml-[38px] flex items-center gap-[6px] select-none">
-                AI Input
+            {/* Header */}
+            <div className="flex justify-between py-1 shrink-0">
+              <p className="text-foreground z-2 ml-[38px] flex items-center gap-[6px] select-none text-sm font-medium">
+                Ask Deluxify AI
               </p>
               <button
                 type="button"
@@ -406,15 +445,57 @@ function InputForm({ ref, onSuccess }: { ref: React.Ref<HTMLTextAreaElement>; on
                 ✕
               </button>
             </div>
-            <textarea
-              ref={ref}
-              placeholder="Ask me anything..."
-              name="message"
-              className="h-full w-full resize-none scroll-py-2 rounded-md p-4 outline-0"
-              required
-              onKeyDown={handleKeys}
-              spellCheck={false}
-            />
+
+            {/* Reply area */}
+            <div
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto rounded-md px-3 py-2 text-sm text-foreground/80 min-h-0"
+            >
+              {!reply && status === "idle" && (
+                <p className="text-foreground/30 text-xs leading-relaxed select-none">
+                  Ask me about our services, pricing, how AI can help your business, or anything else.
+                </p>
+              )}
+              {status === "loading" && (
+                <div className="flex items-center gap-1.5 text-foreground/40 text-xs">
+                  <span className="animate-pulse">●</span>
+                  <span className="animate-pulse [animation-delay:0.2s]">●</span>
+                  <span className="animate-pulse [animation-delay:0.4s]">●</span>
+                </div>
+              )}
+              {reply && (
+                <p className={`leading-relaxed whitespace-pre-wrap ${status === "error" ? "text-red-400" : ""}`}>
+                  {reply}
+                </p>
+              )}
+            </div>
+
+            {/* Input row */}
+            <div className="flex items-end gap-1.5 p-1 shrink-0">
+              <textarea
+                ref={ref}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Ask me anything… (Enter to send)"
+                name="message"
+                rows={2}
+                className="flex-1 resize-none scroll-py-2 rounded-md px-3 py-2 text-sm outline-0 bg-transparent border border-white/10 text-foreground placeholder:text-foreground/30 focus:border-white/20 transition-colors"
+                onKeyDown={handleKeys}
+                spellCheck={false}
+              />
+              <button
+                ref={btnRef}
+                type="submit"
+                disabled={!message.trim() || status === "loading"}
+                className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-brand-600 transition-colors"
+                aria-label="Send"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
