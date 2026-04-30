@@ -35,10 +35,11 @@ const MONTH_NAMES = [
 
 type Props = {
   isLight: boolean;
-  onNext: (data: Pick<BookingData, "date" | "time" | "name" | "email" | "company" | "topic">) => void;
+  submitting?: boolean;
+  onNext: (data: Pick<BookingData, "date" | "time" | "name" | "email" | "phone" | "company" | "topic">) => void;
 };
 
-export function ScheduleStep({ isLight, onNext }: Props) {
+export function ScheduleStep({ isLight, onNext, submitting }: Props) {
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
@@ -46,6 +47,7 @@ export function ScheduleStep({ isLight, onNext }: Props) {
   const [selectedTime, setSelectedTime] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
   const [topic, setTopic] = useState(TOPICS[0]);
 
@@ -89,7 +91,7 @@ export function ScheduleStep({ isLight, onNext }: Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canProceed) return;
-    onNext({ date: selectedDate, time: selectedTime, name, email, company, topic });
+    onNext({ date: selectedDate, time: selectedTime, name, email, phone, company, topic });
   }
 
   return (
@@ -208,10 +210,14 @@ export function ScheduleStep({ isLight, onNext }: Props) {
                 <input type="email" className={inputClass} placeholder="jane@company.com" value={email} onChange={e => setEmail(e.target.value)} required />
               </div>
               <div>
+                <label className={`block text-xs mb-1.5 font-medium ${isLight ? "text-black/50" : "text-white/50"}`}>Phone Number</label>
+                <input type="tel" className={inputClass} placeholder="+27 82 000 0000" value={phone} onChange={e => setPhone(e.target.value)} />
+              </div>
+              <div>
                 <label className={`block text-xs mb-1.5 font-medium ${isLight ? "text-black/50" : "text-white/50"}`}>Company (optional)</label>
                 <input className={inputClass} placeholder="Acme Corp" value={company} onChange={e => setCompany(e.target.value)} />
               </div>
-              <div>
+              <div className="sm:col-span-2">
                 <label className={`block text-xs mb-1.5 font-medium ${isLight ? "text-black/50" : "text-white/50"}`}>What do you need help with?</label>
                 <select
                   className={cn(inputClass, "cursor-pointer")}
@@ -227,17 +233,24 @@ export function ScheduleStep({ isLight, onNext }: Props) {
           {/* CTA */}
           <button
             type="submit"
-            disabled={!canProceed}
+            disabled={!canProceed || submitting}
             className={cn(
-              "w-full py-4 rounded-2xl font-semibold text-sm tracking-wide transition-all duration-200",
-              canProceed
+              "w-full py-4 rounded-2xl font-semibold text-sm tracking-wide transition-all duration-200 flex items-center justify-center gap-2",
+              canProceed && !submitting
                 ? isLight
                   ? "bg-black text-white shadow-[0_0_20px_rgba(0,0,0,0.25)] hover:shadow-[0_0_28px_rgba(0,0,0,0.35)]"
                   : "bg-gradient-to-r from-[#2F8F89] to-[#3B82F6] text-white shadow-[0_0_20px_rgba(63,224,208,0.3)] hover:shadow-[0_0_28px_rgba(63,224,208,0.45)]"
                 : isLight ? "bg-black/10 text-black/30 cursor-not-allowed" : "bg-white/10 text-white/30 cursor-not-allowed"
             )}
           >
-            Continue to Payment →
+            {submitting ? (
+              <>
+                <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                Saving…
+              </>
+            ) : (
+              "Continue to Payment →"
+            )}
           </button>
 
           {selectedDate && selectedTime && (

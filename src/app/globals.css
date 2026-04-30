@@ -53,6 +53,21 @@
     box-sizing: border-box;
   }
 
+  /* ── Select / dropdown dark-mode fix ────────────────────────────
+     Browsers render the native dropdown popup using the OS light
+     theme unless told otherwise. color-scheme: dark flips the whole
+     native control (arrow, popup, options list) to dark.            */
+  .dark select {
+    color-scheme: dark;
+  }
+
+  /* Option elements: dark bg + white text so they're legible in
+     browsers that honour option background overrides (Firefox).    */
+  .dark select option {
+    background-color: #111113;
+    color: #ffffff;
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;

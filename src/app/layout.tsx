@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Caveat } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { SiteShell } from "@/components/layout/SiteShell";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { CookieBanner } from "@/components/layout/CookieBanner";
 
@@ -69,9 +68,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${caveat.variable}`} suppressHydrationWarning>
       <body className="min-h-screen antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <SiteShell>{children}</SiteShell>
           <CookieBanner />
         </ThemeProvider>
       </body>

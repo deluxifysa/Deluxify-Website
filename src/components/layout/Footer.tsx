@@ -179,9 +179,17 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-white/30 text-sm">
-            © {new Date().getFullYear()} Deluxify (Pty) Ltd. All rights reserved.
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-white/30 text-sm">
+              © {new Date().getFullYear()} Deluxify (Pty) Ltd. All rights reserved.
+            </p>
+            <Link
+              href="/staff/login"
+              className="text-white/15 text-xs hover:text-white/40 transition-colors duration-200"
+            >
+              Staff Portal
+            </Link>
+          </div>
           <div className="flex items-center gap-3">
             {socials.map((social) => (
               <a

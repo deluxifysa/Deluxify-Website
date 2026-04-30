@@ -52,20 +52,13 @@ export function PaymentStep({ isLight, booking, onBack, onPay }: Props) {
       // Simulate payment processing — replace with real gateway (e.g. Paystack, Peach Payments)
       await new Promise((r) => setTimeout(r, 2000));
 
+      // Confirm the booking that was already created on form submit
       const res = await fetch("/api/bookings", {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: booking.name,
-          email: booking.email,
-          company: booking.company,
-          topic: booking.topic,
-          date: booking.date,
-          time: booking.time,
-          reference: booking.reference,
-        }),
+        body: JSON.stringify({ reference: booking.reference }),
       });
-      if (!res.ok) throw new Error("Booking save failed");
+      if (!res.ok) throw new Error("Booking confirm failed");
 
       onPay();
     } catch (err) {

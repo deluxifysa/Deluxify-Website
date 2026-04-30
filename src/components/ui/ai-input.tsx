@@ -3,9 +3,7 @@
 import React from "react"
 import { cx } from "class-variance-authority"
 import { AnimatePresence, motion } from "motion/react"
-import { useTheme } from "next-themes"
 
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface OrbProps {
@@ -194,11 +192,6 @@ export function MorphPanel() {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null)
 
-  const { theme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-  React.useEffect(() => setMounted(true), [])
-  const isLight = mounted && theme === "light"
-
   const [showForm, setShowForm] = React.useState(false)
   const [successFlag, setSuccessFlag] = React.useState(false)
   const [labelVisible, setLabelVisible] = React.useState(true)
@@ -260,8 +253,8 @@ export function MorphPanel() {
     // On desktop: keep centered inside the full-size container.
     <div
       className={cx(
-        "flex items-end justify-end sm:items-end sm:justify-end sm:pb-10 sm:pr-8",
-        !showForm && isMobile && "pb-10 pr-8"
+        "flex items-end justify-end",
+        !showForm && "pb-10 pr-8"
       )}
       style={{ width: FORM_WIDTH, height: FORM_HEIGHT }}
     >
@@ -269,8 +262,7 @@ export function MorphPanel() {
         ref={wrapperRef}
         data-panel
         className={cx(
-          "relative z-3 flex flex-col items-center overflow-hidden border",
-          isLight ? "bg-black border-black/20 text-white" : "bg-background"
+          "relative z-3 flex flex-col items-center overflow-hidden border bg-black border-black/20 text-white",
         )}
         initial={false}
         animate={{
@@ -335,22 +327,15 @@ function DockBar() {
         </div>
 
         <AnimatePresence>
-          {!iconOnly && (
-            <motion.div
+          {!iconOnly && !showForm && (
+            <motion.span
               initial={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.4 }}
-              className="overflow-hidden"
+              className="overflow-hidden truncate text-sm font-medium leading-none"
             >
-              <Button
-                type="button"
-                className="flex h-fit flex-1 justify-end rounded-full px-2 !py-0.5 hover:bg-transparent"
-                variant="ghost"
-                onClick={triggerOpen}
-              >
-                <span className="truncate">Ask AI</span>
-              </Button>
-            </motion.div>
+              Ask AI
+            </motion.span>
           )}
         </AnimatePresence>
       </div>
@@ -432,14 +417,17 @@ function InputForm({ ref }: { ref: React.Ref<HTMLTextAreaElement>; onSuccess: ()
             className="flex h-full flex-col p-1"
           >
             {/* Header */}
-            <div className="flex justify-between py-1 shrink-0">
-              <p className="text-foreground z-2 ml-[38px] flex items-center gap-[6px] select-none text-sm font-medium">
-                Ask Deluxify AI
-              </p>
+            <div className="flex items-center justify-between py-1 px-2 shrink-0">
+              <div className="flex items-center gap-2">
+                <ColorOrb dimension="20px" tones={{ base: "oklch(22.64% 0 0)" }} />
+                <p className="text-foreground select-none text-sm font-medium leading-none">
+                  Ask Deluxify AI
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={triggerClose}
-                className="text-foreground mt-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md bg-transparent opacity-50 hover:opacity-100 transition-opacity mr-1"
+                className="text-foreground flex h-6 w-6 cursor-pointer items-center justify-center rounded-md bg-transparent opacity-50 hover:opacity-100 transition-opacity"
                 aria-label="Close"
               >
                 ✕
@@ -500,19 +488,6 @@ function InputForm({ ref }: { ref: React.Ref<HTMLTextAreaElement>; onSuccess: ()
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {showForm && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-2 left-3"
-          >
-            <ColorOrb dimension="24px" tones={{ base: "oklch(22.64% 0 0)" }} />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </form>
   )
 }

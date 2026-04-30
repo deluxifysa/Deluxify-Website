@@ -15,6 +15,7 @@ export type BookingData = {
   time: string;
   name: string;
   email: string;
+  phone: string;
   company: string;
   topic: string;
   reference: string;
@@ -34,10 +35,26 @@ export function BookingFlow() {
 
   const [step, setStep] = useState(1);
   const [booking, setBooking] = useState<Partial<BookingData>>({});
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleScheduleDone(data: Pick<BookingData, "date" | "time" | "name" | "email" | "company" | "topic">) {
+  async function handleScheduleDone(data: Pick<BookingData, "date" | "time" | "name" | "email" | "phone" | "company" | "topic">) {
     const reference = "DLX-" + Date.now().toString(36).toUpperCase().slice(-8);
-    setBooking((prev) => ({ ...prev, ...data, reference }));
+    const bookingData = { ...data, reference };
+    setBooking(bookingData);
+    setSubmitting(true);
+    // Create client (lead) + pending booking immediately — even if user abandons payment
+    try {
+      await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+    } catch (err) {
+      console.error("Failed to save pending booking:", err);
+      // Don't block UX — proceed to payment step regardless
+    } finally {
+      setSubmitting(false);
+    }
     setStep(2);
   }
 
@@ -134,7 +151,7 @@ export function BookingFlow() {
 
         {/* Step content */}
         {step === 1 && (
-          <ScheduleStep isLight={isLight} onNext={handleScheduleDone} />
+          <ScheduleStep isLight={isLight} onNext={handleScheduleDone} submitting={submitting} />
         )}
         {step === 2 && (
           <PaymentStep isLight={isLight} booking={booking as BookingData} onBack={() => setStep(1)} onPay={handlePaymentDone} />
