@@ -72,196 +72,197 @@ async function downloadInvoicePDF(
   lineItems: LineItem[],
   company: CompanySettings
 ) {
-  const { default: jsPDF }    = await import("jspdf");
+  const { default: jsPDF }     = await import("jspdf");
   const { default: autoTable } = await import("jspdf-autotable");
 
-  const doc  = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  const W    = doc.internal.pageSize.getWidth();
-  const H    = doc.internal.pageSize.getHeight();
-  const MARGIN = 16;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const W   = doc.internal.pageSize.getWidth();
+  const H   = doc.internal.pageSize.getHeight();
+  const ML  = 16;
+  const MR  = W - 16;
+  const CW  = MR - ML;
 
-  const TEAL      = [47,  143, 137] as [number,number,number];
-  const TEAL_PALE = [232, 246, 245] as [number,number,number];
-  const DARK      = [22,  22,  26]  as [number,number,number];
-  const MIDGRAY   = [90,  90,  95]  as [number,number,number];
-  const LIGHTGRAY = [200, 200, 205] as [number,number,number];
-  const XLTGRAY   = [245, 245, 247] as [number,number,number];
-  const WHITE     = [255, 255, 255] as [number,number,number];
-
-  const statusColors: Record<string,[number,number,number]> = {
-    paid:      [22,163,74], overdue: [220,38,38],
-    sent:      [37,99,235], draft:   [113,113,122], cancelled: [82,82,91],
-  };
+  type RGB = [number,number,number];
+  const DARK:  RGB = [30,  30,  30];
+  const GRAY:  RGB = [107, 107, 107];
+  const LGRAY: RGB = [212, 212, 212];
+  const WHITE: RGB = [255, 255, 255];
 
   const logoData = await loadImageDataUrl("/logo.png");
 
-  doc.setFillColor(...TEAL);
-  doc.rect(0, 0, 4, H, "F");
-  doc.setFillColor(...TEAL_PALE);
-  doc.rect(4, 0, W - 4, 52, "F");
+  let y = 18;
 
-  if (logoData) doc.addImage(logoData, "PNG", MARGIN, 10, 52, 14, undefined, "FAST");
-  else {
-    doc.setFont("helvetica","bold"); doc.setFontSize(16); doc.setTextColor(...TEAL);
-    doc.text(company.company_name ?? "Deluxify", MARGIN, 20);
+  // Logo — top right
+  if (logoData) {
+    doc.addImage(logoData, "PNG", MR - 32, y - 7, 32, 10, undefined, "FAST");
   }
 
-  doc.setFont("helvetica","bold"); doc.setFontSize(28);
-  doc.setTextColor(...TEAL);
-  doc.text("INVOICE", W - MARGIN, 22, { align: "right" });
-  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.setTextColor(...MIDGRAY);
-  doc.text(invoice.invoice_no, W - MARGIN, 29, { align: "right" });
+  // "Invoice" heading — top left
+  doc.setFont("helvetica", "bold"); doc.setFontSize(26); doc.setTextColor(...DARK);
+  doc.text("Invoice", ML, y);
+  y += 10;
 
-  const sm   = INVOICE_STATUS_META[invoice.status as InvoiceStatus];
-  const sBg  = statusColors[invoice.status] ?? MIDGRAY;
-  doc.setFillColor(...sBg);
-  doc.roundedRect(W - MARGIN - 28, 32, 28, 7, 1.5, 1.5, "F");
-  doc.setFontSize(6.5); doc.setFont("helvetica","bold"); doc.setTextColor(...WHITE);
-  doc.text(sm.label.toUpperCase(), W - MARGIN - 14, 36.7, { align: "center" });
+  // Thin rule
+  doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, y, MR, y); y += 7;
 
-  let cy = 28;
-  doc.setFontSize(8.5); doc.setFont("helvetica","bold"); doc.setTextColor(...DARK);
-  doc.text(company.company_name ?? "Deluxify", MARGIN, cy); cy += 5;
-  doc.setFontSize(7.5); doc.setFont("helvetica","normal"); doc.setTextColor(...MIDGRAY);
-  if (company.company_address) {
-    company.company_address.split(/[\n,]/).map(s=>s.trim()).filter(Boolean).slice(0,3)
-      .forEach(l => { doc.text(l, MARGIN, cy); cy += 4.2; });
-  }
-  if (company.company_email)   { doc.text(company.company_email,   MARGIN, cy); cy += 4.2; }
-  if (company.company_phone)   { doc.text(company.company_phone,   MARGIN, cy); cy += 4.2; }
-  if (company.company_website) { doc.text(company.company_website, MARGIN, cy); }
-
-  doc.setDrawColor(...TEAL); doc.setLineWidth(0.8);
-  doc.line(4, 52, W, 52);
-
-  let y = 60;
-  const colMid = W / 2 + 4;
-
-  doc.setFontSize(6.5); doc.setFont("helvetica","bold"); doc.setTextColor(...TEAL);
-  doc.text("BILL TO", MARGIN, y); y += 5;
-  doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(...DARK);
-  doc.text(invoice.client_name, MARGIN, y); y += 5;
-  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.setTextColor(...MIDGRAY);
-  if (invoice.client_address) {
-    invoice.client_address.split(/\n/).map(s => s.trim()).filter(Boolean).forEach(l => {
-      doc.text(l, MARGIN, y); y += 4.2;
-    });
-  }
-  if (invoice.client_phone)  { doc.text(invoice.client_phone,  MARGIN, y); y += 4.5; }
-  if (invoice.client_email)  { doc.text(invoice.client_email,  MARGIN, y); y += 4.5; }
-
-  let detY = 60;
-  doc.setFontSize(6.5); doc.setFont("helvetica","bold"); doc.setTextColor(...TEAL);
-  doc.text("INVOICE DETAILS", colMid, detY); detY += 5;
-  const detRows: [string,string][] = [
-    ["Invoice Number", invoice.invoice_no],
-    ["Issue Date",     formatDate(invoice.issue_date)],
-    ["Due Date",       invoice.due_date ? formatDate(invoice.due_date) : "—"],
-    ...(invoice.paid_date ? [["Date Paid", formatDate(invoice.paid_date)] as [string,string]] : []),
-    ...(company.payment_terms ? [["Payment Terms", `${company.payment_terms} days`] as [string,string]] : []),
+  // Metadata key-value rows
+  const meta: [string, string][] = [
+    ["Invoice number", invoice.invoice_no],
+    ["Date of issue",  formatDate(invoice.issue_date)],
+    ["Due date",       invoice.due_date ? formatDate(invoice.due_date) : "—"],
+    ...(company.vat_number ? [["VAT Registration", company.vat_number] as [string, string]] : []),
   ];
-  doc.setFontSize(7.5);
-  detRows.forEach(([label, val]) => {
-    doc.setFont("helvetica","bold"); doc.setTextColor(...MIDGRAY); doc.text(label, colMid, detY);
-    doc.setFont("helvetica","normal"); doc.setTextColor(...DARK); doc.text(val, W-MARGIN, detY, { align:"right" });
-    detY += 5;
+  const LBL_W = 44;
+  meta.forEach(([label, val]) => {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text(label, ML, y);
+    doc.setFont("helvetica", "bold"); doc.setTextColor(...DARK);
+    doc.text(val, ML + LBL_W, y);
+    y += 5;
   });
-  detY += 1;
-  doc.setFontSize(6.5); doc.setFont("helvetica","normal"); doc.setTextColor(...LIGHTGRAY);
-  if (company.vat_number) { doc.text(`VAT Reg: ${company.vat_number}`, W-MARGIN, detY, { align:"right" }); detY += 4; }
-  if (company.reg_number) { doc.text(`Co Reg: ${company.reg_number}`,  W-MARGIN, detY, { align:"right" }); }
+  y += 6;
 
-  y = Math.max(y + 6, detY + 6);
-  doc.setDrawColor(...LIGHTGRAY); doc.setLineWidth(0.25);
-  doc.line(MARGIN, y, W-MARGIN, y); y += 7;
+  // From / Bill To — two columns
+  const COL2 = ML + CW / 2 + 4;
 
+  // Company name
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...DARK);
+  doc.text(company.company_name ?? "", ML, y);
+  // "Bill to" label
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  doc.text("Bill to", COL2, y);
+  y += 5.5;
+
+  // From details
+  let fromY = y;
+  const fromLines = [
+    ...(company.company_address?.split(/[\n,]/).map(s => s.trim()).filter(Boolean) ?? []),
+    company.company_email,
+    company.company_phone,
+    company.company_website,
+  ].filter(Boolean) as string[];
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  fromLines.forEach(l => { doc.text(l, ML, fromY); fromY += 4.5; });
+
+  // Bill To details
+  let toY = y;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...DARK);
+  doc.text(invoice.client_name || "—", COL2, toY); toY += 5.5;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  const toLines = [
+    ...((invoice as any).client_address?.split(/\n/).map((s: string) => s.trim()).filter(Boolean) ?? []),
+    (invoice as any).client_phone as string | undefined,
+    invoice.client_email,
+  ].filter(Boolean) as string[];
+  toLines.forEach(l => { doc.text(l, COL2, toY); toY += 4.5; });
+
+  y = Math.max(fromY, toY) + 10;
+
+  // Large amount-due heading
+  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(...DARK);
+  doc.text(
+    `${formatCurrency(invoice.total)} ${invoice.currency} due ${invoice.due_date ? formatDate(invoice.due_date) : "—"}`,
+    ML, y
+  );
+  y += 10;
+
+  // Thin rule
+  doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, y, MR, y); y += 7;
+
+  // Notes
+  if (invoice.notes) {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    const nl = doc.splitTextToSize(invoice.notes, CW);
+    doc.text(nl, ML, y); y += nl.length * 4.5 + 6;
+  }
+
+  // Banking — plain text list
+  if (company.bank_name || company.bank_account) {
+    doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text("Payment Details", ML, y); y += 5;
+    doc.setFont("helvetica", "normal");
+    if (company.bank_name)    { doc.text(`Bank: ${company.bank_name}`,          ML, y); y += 4.5; }
+    if (company.bank_account) { doc.text(`Account No: ${company.bank_account}`, ML, y); y += 4.5; }
+    if (company.bank_branch)  { doc.text(`Branch Code: ${company.bank_branch}`, ML, y); y += 4.5; }
+    doc.text(`Reference: ${invoice.invoice_no}`, ML, y); y += 8;
+  }
+
+  // Line items table — plain, horizontal rules only
   autoTable(doc, {
     startY: y,
-    head: [["#","Description","Qty","Unit Price","Amount"]],
-    body: lineItems.map((it, i) => [
-      String(i+1), it.description||"—",
-      String(Number.isInteger(it.quantity)?it.quantity:it.quantity.toFixed(2)),
-      formatCurrency(Math.round(it.unit_price*100)),
-      formatCurrency(Math.round(it.quantity*it.unit_price*100)),
+    head: [["Description", "Qty", "Unit Price", "Tax", "Amount"]],
+    body: lineItems.map(it => [
+      it.description || "—",
+      Number.isInteger(it.quantity) ? String(it.quantity) : it.quantity.toFixed(2),
+      formatCurrency(Math.round(it.unit_price * 100)),
+      `${invoice.tax_rate}%`,
+      formatCurrency(Math.round(it.quantity * it.unit_price * 100)),
     ]),
     theme: "plain",
-    headStyles: { fillColor:DARK, textColor:WHITE, fontStyle:"bold", fontSize:8, cellPadding:{top:4,bottom:4,left:4,right:4} },
-    bodyStyles: { fontSize:8.5, textColor:DARK, cellPadding:{top:4,bottom:4,left:4,right:4} },
-    alternateRowStyles: { fillColor:XLTGRAY },
-    columnStyles: {
-      0:{cellWidth:10,halign:"center",textColor:MIDGRAY},
-      1:{cellWidth:"auto"},
-      2:{cellWidth:16,halign:"center"},
-      3:{cellWidth:36,halign:"right"},
-      4:{cellWidth:36,halign:"right",fontStyle:"bold"},
+    headStyles: {
+      textColor: GRAY, fontStyle: "normal", fontSize: 8,
+      cellPadding: { top: 3, bottom: 6, left: 0, right: 0 },
     },
-    margin:{left:MARGIN,right:MARGIN},
-    didDrawCell:(d:any)=>{
-      if(d.section==="head"&&d.row.index===0){
-        doc.setDrawColor(...TEAL); doc.setLineWidth(0.6);
-        doc.line(d.cell.x,d.cell.y,d.cell.x+d.cell.width,d.cell.y);
-      }
+    bodyStyles: {
+      fontSize: 9, textColor: DARK,
+      cellPadding: { top: 5, bottom: 5, left: 0, right: 0 },
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" },
+      1: { cellWidth: 14, halign: "right" },
+      2: { cellWidth: 30, halign: "right" },
+      3: { cellWidth: 14, halign: "right", textColor: GRAY },
+      4: { cellWidth: 30, halign: "right" },
+    },
+    margin: { left: ML, right: W - MR },
+    didDrawCell: (data: any) => {
+      if (data.column.index !== data.table.columns.length - 1) return;
+      doc.setDrawColor(...LGRAY); doc.setLineWidth(0.25);
+      doc.line(ML, data.cell.y + data.cell.height, MR, data.cell.y + data.cell.height);
     },
   });
 
   y = (doc as any).lastAutoTable.finalY + 6;
-  doc.setDrawColor(...LIGHTGRAY); doc.setLineWidth(0.25);
-  doc.line(MARGIN, y, W-MARGIN, y); y += 6;
 
-  const totW = 120; const totX = W-MARGIN-totW; const totValX = W-MARGIN;
-  doc.setFontSize(8); doc.setFont("helvetica","normal");
-  doc.setTextColor(...MIDGRAY); doc.text("Subtotal", totX, y);
-  doc.setTextColor(...DARK); doc.text(formatCurrency(invoice.subtotal), totValX, y, { align:"right" }); y += 6;
-  doc.setTextColor(...MIDGRAY); doc.text(`VAT (${invoice.tax_rate}%)`, totX, y);
-  doc.setTextColor(...DARK); doc.text(formatCurrency(invoice.tax_amount), totValX, y, { align:"right" }); y += 3;
-  doc.setFillColor(...TEAL); doc.roundedRect(totX-2,y+1,totW+4,14,2,2,"F");
-  doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.setTextColor(...WHITE);
-  doc.text("TOTAL DUE", totX+2, y+9);
-  doc.setFontSize(12); doc.text(formatCurrency(invoice.total), totValX-2, y+9, { align:"right" }); y += 22;
+  // Thin rule above totals
+  doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, y, MR, y); y += 6;
 
-  if (company.bank_name || company.bank_account || company.bank_branch) {
-    doc.setFillColor(...TEAL_PALE); doc.setDrawColor(...TEAL); doc.setLineWidth(0.4);
-    doc.roundedRect(MARGIN, y, W-MARGIN*2, 28, 2, 2, "FD");
-    doc.setFillColor(...TEAL); doc.roundedRect(MARGIN,y,3,28,1,1,"F");
-    const bx = MARGIN+8; let by = y+7;
-    doc.setFontSize(7); doc.setFont("helvetica","bold"); doc.setTextColor(...TEAL);
-    doc.text("PAYMENT DETAILS — EFT TRANSFER", bx, by); by += 5.5;
-    const cols = [
-      company.bank_name    ? {label:"Bank",        val:company.bank_name}    : null,
-      company.bank_account ? {label:"Account No",  val:company.bank_account} : null,
-      company.bank_branch  ? {label:"Branch Code", val:company.bank_branch}  : null,
-    ].filter(Boolean) as {label:string;val:string}[];
-    const step = (W-MARGIN*2-8)/Math.max(cols.length,1);
-    cols.forEach(({label,val},i)=>{
-      const cx = bx+i*step;
-      doc.setFontSize(6.5); doc.setFont("helvetica","bold"); doc.setTextColor(...MIDGRAY); doc.text(label.toUpperCase(),cx,by);
-      doc.setFontSize(8);   doc.setFont("helvetica","bold"); doc.setTextColor(...DARK);    doc.text(val,cx,by+4.5);
-    });
-    by+=10; doc.setFontSize(6.5); doc.setFont("helvetica","italic"); doc.setTextColor(...MIDGRAY);
-    doc.text(`Please use  "${invoice.invoice_no}"  as your payment reference.`, bx, by);
-    y += 36;
+  // Totals — right-aligned with thin dividers
+  const totW  = 120;
+  const totLX = MR - totW;
+  const totRows: [string, string][] = [
+    ["Subtotal",            formatCurrency(invoice.subtotal)],
+    ["Total excluding tax", formatCurrency(invoice.subtotal)],
+    [`VAT (${invoice.tax_rate}% on ${formatCurrency(invoice.subtotal)})`, formatCurrency(invoice.tax_amount)],
+    ["Total",               formatCurrency(invoice.total)],
+  ];
+  totRows.forEach(([label, val]) => {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text(label, totLX, y);
+    doc.setTextColor(...DARK); doc.text(val, MR, y, { align: "right" });
+    y += 4;
+    doc.setDrawColor(...LGRAY); doc.setLineWidth(0.2);
+    doc.line(totLX, y, MR, y); y += 4;
+  });
+
+  y += 2;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...DARK);
+  doc.text("Amount due", totLX, y);
+  doc.text(`${formatCurrency(invoice.total)} ${invoice.currency}`, MR, y, { align: "right" });
+
+  // Footer — thin rule + page number
+  doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, H - 14, MR, H - 14);
+  const totalPages = (doc as any).internal.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(...LGRAY);
+    doc.text(`Page ${p} of ${totalPages}`, MR, H - 8, { align: "right" });
   }
 
-  if (invoice.notes) {
-    doc.setFontSize(6.5); doc.setFont("helvetica","bold"); doc.setTextColor(...TEAL); doc.text("NOTES",MARGIN,y); y+=4.5;
-    doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(...MIDGRAY);
-    const nl = doc.splitTextToSize(invoice.notes,W-MARGIN*2);
-    doc.text(nl,MARGIN,y); y+=nl.length*4.5+4;
-  }
-
-  doc.setFillColor(...DARK); doc.rect(0,H-18,W,18,"F");
-  doc.setFillColor(...TEAL); doc.rect(0,H-18,W,1.5,"F");
-  if (logoData) doc.addImage(logoData,"PNG",MARGIN,H-14,28,7,undefined,"FAST");
-  const fp=[company.company_name,company.company_email,company.company_phone,company.company_website].filter(Boolean);
-  doc.setFontSize(7); doc.setFont("helvetica","normal"); doc.setTextColor(...WHITE);
-  doc.text(fp.join("   |   "),W-MARGIN,H-10,{align:"right"});
-  doc.setFontSize(6); doc.setTextColor(160,200,196);
-  doc.text("Thank you for your business.",W-MARGIN,H-5,{align:"right"});
-  const tp=(doc as any).internal.getNumberOfPages();
-  for(let p=1;p<=tp;p++){
-    doc.setPage(p); doc.setFontSize(6.5); doc.setTextColor(130,130,135);
-    doc.text(`Page ${p} of ${tp}`,W/2,H-22,{align:"center"});
-  }
   doc.save(`${invoice.invoice_no}.pdf`);
 }
 
@@ -428,7 +429,7 @@ function AccordionSection({
   );
 }
 
-// ─── Live invoice preview — mirrors the PDF layout exactly ───────────────────
+// ─── Live invoice preview ─────────────────────────────────────────────────────
 function InvoicePreview({
   invoiceNo, issueDate, dueDate, clientName, clientEmail, clientPhone, clientAddress,
   items, taxRate, notes, company, project,
@@ -443,285 +444,175 @@ function InvoicePreview({
     unit_price: Math.round(it.unit_price * 100),
   }));
   const { subtotal, tax_amount, total } = computeInvoiceTotals(liveItems, taxRate);
-  const today = new Date().toLocaleDateString("en-ZA", { day:"numeric", month:"short", year:"numeric" });
 
-  // Colour tokens matching the PDF generator
-  const TEAL      = "#2F8F89";
-  const TEAL_PALE = "#E8F6F5";
-  const DARK      = "#16161A";
-  const MIDGRAY   = "#5A5A5F";
-  const LIGHTGRAY = "#C8C8CD";
-  const XLTGRAY   = "#F5F5F7";
+  const DARK  = "#1E1E1E";
+  const GRAY  = "#6B6B6B";
+  const LGRAY = "#D4D4D4";
 
-  // Derive address lines for company
-  const companyAddrLines = company?.company_address
-    ? company.company_address.split(/[\n,]/).map(s => s.trim()).filter(Boolean).slice(0, 3)
-    : [];
+  const fromLines = [
+    ...(company?.company_address?.split(/[\n,]/).map(s => s.trim()).filter(Boolean) ?? []),
+    company?.company_email,
+    company?.company_phone,
+    company?.company_website,
+  ].filter(Boolean) as string[];
 
-  // Banking columns (same as PDF)
-  const bankCols = [
-    company?.bank_name    ? { label: "Bank",        val: company.bank_name }    : null,
-    company?.bank_account ? { label: "Account No",  val: company.bank_account } : null,
-    company?.bank_branch  ? { label: "Branch Code", val: company.bank_branch }  : null,
-  ].filter(Boolean) as { label: string; val: string }[];
+  const toLines = [
+    ...(clientAddress ? clientAddress.split(/\n/).map(s => s.trim()).filter(Boolean) : []),
+    clientPhone || null,
+    clientEmail || null,
+  ].filter(Boolean) as string[];
 
-  // Company footer line
-  const footerParts = [
-    company?.company_name, company?.company_email,
-    company?.company_phone, company?.company_website,
-  ].filter(Boolean);
+  const meta = [
+    { label: "Invoice number",  value: invoiceNo || "DRAFT" },
+    { label: "Date of issue",   value: issueDate },
+    { label: "Due date",        value: dueDate || "—" },
+    ...(company?.vat_number ? [{ label: "VAT Registration", value: company.vat_number }] : []),
+  ];
+
+  const totRows = [
+    { label: "Subtotal",            value: formatCurrency(subtotal) },
+    { label: "Total excluding tax", value: formatCurrency(subtotal) },
+    { label: `VAT (${taxRate}% on ${formatCurrency(subtotal)})`, value: formatCurrency(tax_amount) },
+    { label: "Total",               value: formatCurrency(total) },
+  ];
 
   return (
     <div style={{
-      position: "relative",
       background: "white",
       fontFamily: "'Inter','Segoe UI',system-ui,sans-serif",
-      borderRadius: 12,
-      overflow: "hidden",
-      boxShadow: "0 8px 48px rgba(0,0,0,0.18)",
-      minWidth: 520,
       color: DARK,
+      padding: "44px 52px",
+      minWidth: 520,
+      borderRadius: 8,
+      boxShadow: "0 4px 32px rgba(0,0,0,0.10)",
     }}>
 
-      {/* ── Teal left stripe (mirrors the 4mm PDF stripe) ── */}
-      <div style={{
-        position: "absolute", top: 0, left: 0, width: 6,
-        height: "100%", background: TEAL, zIndex: 2,
-      }} />
+      {/* ── Header: "Invoice" + logo ── */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <h1 style={{ fontSize: 30, fontWeight: 700, margin: 0, letterSpacing: -0.5, color: DARK }}>Invoice</h1>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="logo" style={{ height: 26, display: "block", marginTop: 4 }} />
+      </div>
 
-      {/* ── Teal-pale header wash ── */}
-      <div style={{ background: TEAL_PALE, marginLeft: 6 }}>
-        <div style={{ padding: "24px 28px 20px 28px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      {/* ── Thin rule ── */}
+      <div style={{ height: 1, background: LGRAY, marginBottom: 18 }} />
 
-          {/* Left: logo + company details */}
-          <div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="logo"
-              style={{ height: 22, display: "block", marginBottom: 10, filter: "brightness(0)" }} />
-            <p style={{ fontWeight: 700, fontSize: 12, color: DARK, margin: "0 0 3px 0" }}>
-              {company?.company_name ?? "Your Company"}
-            </p>
-            {companyAddrLines.map((l, i) => (
-              <p key={i} style={{ fontSize: 10.5, color: MIDGRAY, margin: "1px 0" }}>{l}</p>
-            ))}
-            {company?.company_email   && <p style={{ fontSize: 10.5, color: MIDGRAY, margin: "1px 0" }}>{company.company_email}</p>}
-            {company?.company_phone   && <p style={{ fontSize: 10.5, color: MIDGRAY, margin: "1px 0" }}>{company.company_phone}</p>}
-            {company?.company_website && <p style={{ fontSize: 10.5, color: MIDGRAY, margin: "1px 0" }}>{company.company_website}</p>}
+      {/* ── Metadata ── */}
+      <div style={{ marginBottom: 24 }}>
+        {meta.map(({ label, value }) => (
+          <div key={label} style={{ display: "flex", marginBottom: 5 }}>
+            <span style={{ fontSize: 11, color: GRAY, width: 140, flexShrink: 0 }}>{label}</span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: DARK }}>{value}</span>
           </div>
+        ))}
+      </div>
 
-          {/* Right: INVOICE heading + number + status badge */}
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontSize: 32, fontWeight: 900, color: TEAL, letterSpacing: -1, lineHeight: 1, margin: 0 }}>
-              INVOICE
-            </p>
-            <p style={{ fontSize: 11, color: MIDGRAY, fontFamily: "monospace", margin: "4px 0 8px 0" }}>
-              {invoiceNo || "DRAFT"}
-            </p>
-            {/* Status badge */}
-            <span style={{
-              display: "inline-block",
-              padding: "2px 10px",
-              borderRadius: 4,
-              background: "#717175",
-              color: "white",
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: 1,
-              textTransform: "uppercase",
-            }}>
-              DRAFT
+      {/* ── From / Bill To ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 28 }}>
+        <div>
+          <p style={{ fontWeight: 700, fontSize: 12, margin: "0 0 6px 0", color: DARK }}>
+            {company?.company_name ?? "Your Company"}
+          </p>
+          {fromLines.map((l, i) => (
+            <p key={i} style={{ fontSize: 11, color: GRAY, margin: "2px 0", lineHeight: 1.5 }}>{l}</p>
+          ))}
+        </div>
+        <div>
+          <p style={{ fontSize: 11, color: GRAY, margin: "0 0 6px 0" }}>Bill to</p>
+          <p style={{ fontWeight: 700, fontSize: 12, margin: "0 0 5px 0", color: DARK }}>
+            {clientName || "Client Name"}
+          </p>
+          {toLines.map((l, i) => (
+            <p key={i} style={{ fontSize: 11, color: GRAY, margin: "2px 0", lineHeight: 1.5 }}>{l}</p>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Large amount-due heading ── */}
+      <p style={{ fontSize: 20, fontWeight: 700, margin: "0 0 18px 0", color: DARK }}>
+        {formatCurrency(total)} {company?.currency ?? "ZAR"}{dueDate ? ` due ${dueDate}` : ""}
+      </p>
+
+      {/* ── Thin rule ── */}
+      <div style={{ height: 1, background: LGRAY, marginBottom: 18 }} />
+
+      {/* ── Notes ── */}
+      {notes && (
+        <p style={{ fontSize: 11, color: GRAY, margin: "0 0 18px 0", lineHeight: 1.7 }}>{notes}</p>
+      )}
+
+      {/* ── Banking — plain text ── */}
+      {(company?.bank_name || company?.bank_account) && (
+        <div style={{ marginBottom: 20 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: GRAY, margin: "0 0 5px 0" }}>Payment Details</p>
+          {company?.bank_name    && <p style={{ fontSize: 11, color: GRAY, margin: "2px 0" }}>Bank: {company.bank_name}</p>}
+          {company?.bank_account && <p style={{ fontSize: 11, color: GRAY, margin: "2px 0" }}>Account No: {company.bank_account}</p>}
+          {company?.bank_branch  && <p style={{ fontSize: 11, color: GRAY, margin: "2px 0" }}>Branch Code: {company.bank_branch}</p>}
+          <p style={{ fontSize: 11, color: GRAY, margin: "2px 0" }}>Reference: {invoiceNo || "—"}</p>
+        </div>
+      )}
+
+      {/* ── Line items table ── */}
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr style={{ borderBottom: `1px solid ${LGRAY}` }}>
+            <th style={{ textAlign: "left",   padding: "6px 0 10px",      fontSize: 11, fontWeight: 400, color: GRAY }}>Description</th>
+            <th style={{ textAlign: "right",  padding: "6px 8px 10px",    fontSize: 11, fontWeight: 400, color: GRAY, width: 44 }}>Qty</th>
+            <th style={{ textAlign: "right",  padding: "6px 8px 10px",    fontSize: 11, fontWeight: 400, color: GRAY, width: 100 }}>Unit price</th>
+            <th style={{ textAlign: "right",  padding: "6px 8px 10px",    fontSize: 11, fontWeight: 400, color: GRAY, width: 52 }}>Tax</th>
+            <th style={{ textAlign: "right",  padding: "6px 0 10px 8px",  fontSize: 11, fontWeight: 400, color: GRAY, width: 100 }}>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, i) => (
+            <tr key={i} style={{ borderBottom: `1px solid ${LGRAY}` }}>
+              <td style={{ padding: "12px 0", fontSize: 12, color: DARK, verticalAlign: "top" }}>
+                <div>{item.description || <span style={{ color: LGRAY }}>—</span>}</div>
+                {project && i === 0 && (
+                  <div style={{ fontSize: 10, color: GRAY, marginTop: 2 }}>{project}</div>
+                )}
+              </td>
+              <td style={{ padding: "12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
+                {Number.isInteger(item.quantity) ? item.quantity : item.quantity.toFixed(2)}
+              </td>
+              <td style={{ padding: "12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
+                {item.unit_price > 0 ? formatCurrency(Math.round(item.unit_price * 100)) : "—"}
+              </td>
+              <td style={{ padding: "12px 8px", fontSize: 12, color: GRAY, textAlign: "right", verticalAlign: "top" }}>
+                {taxRate}%
+              </td>
+              <td style={{ padding: "12px 0 12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
+                {item.unit_price > 0 ? formatCurrency(Math.round(item.quantity * item.unit_price * 100)) : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* ── Thin rule above totals ── */}
+      <div style={{ height: 1, background: LGRAY, margin: "0 0 16px 0" }} />
+
+      {/* ── Totals — right-aligned with thin dividers ── */}
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div style={{ width: 340 }}>
+          {totRows.map(({ label, value }) => (
+            <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: `1px solid ${LGRAY}` }}>
+              <span style={{ fontSize: 11, color: GRAY }}>{label}</span>
+              <span style={{ fontSize: 11, color: DARK }}>{value}</span>
+            </div>
+          ))}
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0 0" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: DARK }}>Amount due</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: DARK }}>
+              {formatCurrency(total)} {company?.currency ?? "ZAR"}
             </span>
           </div>
         </div>
       </div>
 
-      {/* ── Teal rule separating header from body ── */}
-      <div style={{ marginLeft: 6, height: 2, background: TEAL }} />
-
-      {/* ── BILL TO  +  INVOICE DETAILS ── */}
-      <div style={{ marginLeft: 6, padding: "18px 28px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
-
-        {/* Bill To */}
-        <div>
-          <p style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.2, color: TEAL, margin: "0 0 6px 0" }}>
-            Bill To
-          </p>
-          <p style={{ fontSize: 13, fontWeight: 700, color: DARK, margin: "0 0 4px 0" }}>
-            {clientName || "Client Name"}
-          </p>
-          {clientAddress && (
-            <p style={{ fontSize: 10.5, color: MIDGRAY, lineHeight: 1.6, margin: "0 0 2px 0", whiteSpace: "pre-line" }}>{clientAddress}</p>
-          )}
-          {clientPhone && (
-            <p style={{ fontSize: 10.5, color: MIDGRAY, margin: "1px 0" }}>{clientPhone}</p>
-          )}
-          {clientEmail && (
-            <p style={{ fontSize: 10.5, color: MIDGRAY, margin: "1px 0" }}>{clientEmail}</p>
-          )}
-        </div>
-
-        {/* Invoice Details */}
-        <div>
-          <p style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.2, color: TEAL, margin: "0 0 6px 0" }}>
-            Invoice Details
-          </p>
-          {[
-            ["Invoice Number", invoiceNo || "—"],
-            ["Issue Date",     issueDate || today],
-            ["Due Date",       dueDate || "—"],
-            ...(project ? [["Project", project]] : []),
-            ...(company?.payment_terms ? [["Payment Terms", `${company.payment_terms} days`]] : []),
-          ].map(([label, val]) => (
-            <div key={label} style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-              <span style={{ fontSize: 10, fontWeight: 700, color: MIDGRAY }}>{label}</span>
-              <span style={{ fontSize: 10, color: DARK, fontFamily: label === "Invoice Number" ? "monospace" : undefined }}>
-                {val}
-              </span>
-            </div>
-          ))}
-          {company?.vat_number && (
-            <p style={{ fontSize: 9, color: LIGHTGRAY, marginTop: 4 }}>VAT Reg: {company.vat_number}</p>
-          )}
-          {company?.reg_number && (
-            <p style={{ fontSize: 9, color: LIGHTGRAY, margin: "1px 0 0 0" }}>Co Reg: {company.reg_number}</p>
-          )}
-        </div>
-      </div>
-
-      {/* ── Light gray divider ── */}
-      <div style={{ marginLeft: 6, height: 1, background: LIGHTGRAY, margin: `0 6px 0 6px` }} />
-
-      {/* ── Line items table ── */}
-      <div style={{ marginLeft: 6 }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-          <thead>
-            <tr>
-              {/* Teal top border on header */}
-              <th colSpan={5} style={{ padding: 0, height: 0 }}>
-                <div style={{ height: 2, background: TEAL }} />
-              </th>
-            </tr>
-            <tr style={{ background: DARK }}>
-              <th style={{ textAlign: "center", padding: "8px 10px", color: "white", fontWeight: 700, fontSize: 10, width: 32 }}>#</th>
-              <th style={{ textAlign: "left",   padding: "8px 10px", color: "white", fontWeight: 700, fontSize: 10 }}>Description</th>
-              <th style={{ textAlign: "center", padding: "8px 10px", color: "white", fontWeight: 700, fontSize: 10, width: 48 }}>Qty</th>
-              <th style={{ textAlign: "right",  padding: "8px 10px", color: "white", fontWeight: 700, fontSize: 10, width: 90 }}>Unit Price</th>
-              <th style={{ textAlign: "right",  padding: "8px 14px 8px 10px", color: "white", fontWeight: 700, fontSize: 10, width: 90 }}>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, i) => (
-              <tr key={i} style={{ background: i % 2 === 1 ? XLTGRAY : "white" }}>
-                <td style={{ textAlign: "center", padding: "9px 10px", color: MIDGRAY, fontSize: 11 }}>{i + 1}</td>
-                <td style={{ padding: "9px 10px", color: DARK, fontSize: 12 }}>
-                  {item.description || <span style={{ color: LIGHTGRAY }}>—</span>}
-                </td>
-                <td style={{ textAlign: "center", padding: "9px 10px", color: DARK, fontSize: 12 }}>
-                  {Number.isInteger(item.quantity) ? item.quantity : item.quantity.toFixed(2)}
-                </td>
-                <td style={{ textAlign: "right", padding: "9px 10px", color: DARK, fontSize: 12 }}>
-                  {item.unit_price > 0 ? formatCurrency(Math.round(item.unit_price * 100)) : "—"}
-                </td>
-                <td style={{ textAlign: "right", padding: "9px 14px 9px 10px", color: DARK, fontWeight: 700, fontSize: 12 }}>
-                  {item.unit_price > 0 ? formatCurrency(Math.round(item.quantity * item.unit_price * 100)) : "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* ── Light gray divider ── */}
-      <div style={{ height: 1, background: LIGHTGRAY, marginLeft: 6 }} />
-
-      {/* ── Subtotal / VAT / TOTAL DUE ── */}
-      <div style={{ marginLeft: 6, padding: "12px 28px 16px", display: "flex", justifyContent: "flex-end" }}>
-        <div style={{ width: 340 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-            <span style={{ fontSize: 11, color: MIDGRAY }}>Subtotal</span>
-            <span style={{ fontSize: 11, color: DARK }}>{formatCurrency(subtotal)}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-            <span style={{ fontSize: 11, color: MIDGRAY }}>VAT ({taxRate}%)</span>
-            <span style={{ fontSize: 11, color: DARK }}>{formatCurrency(tax_amount)}</span>
-          </div>
-          {/* Teal total box — mirrors the PDF rounded rect */}
-          <div style={{
-            background: TEAL, borderRadius: 6,
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-            padding: "9px 12px",
-          }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "white" }}>TOTAL DUE</span>
-            <span style={{ fontSize: 15, fontWeight: 900, color: "white" }}>{formatCurrency(total)}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Banking details (teal-pale box with teal left stripe + border) ── */}
-      {bankCols.length > 0 && (
-        <div style={{ marginLeft: 6, padding: "0 28px 20px" }}>
-          <div style={{
-            position: "relative",
-            background: TEAL_PALE,
-            border: `1px solid ${TEAL}`,
-            borderRadius: 6,
-            overflow: "hidden",
-            padding: "12px 14px 12px 20px",
-          }}>
-            {/* Inner teal left stripe */}
-            <div style={{ position: "absolute", top: 0, left: 0, width: 5, height: "100%", background: TEAL }} />
-            <p style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: TEAL, margin: "0 0 10px 0" }}>
-              Payment Details — EFT Transfer
-            </p>
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${bankCols.length}, 1fr)`, gap: 16 }}>
-              {bankCols.map(({ label, val }) => (
-                <div key={label}>
-                  <p style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, color: MIDGRAY, margin: "0 0 3px 0" }}>
-                    {label}
-                  </p>
-                  <p style={{ fontSize: 12, fontWeight: 700, color: DARK, margin: 0 }}>{val}</p>
-                </div>
-              ))}
-            </div>
-            <p style={{ fontSize: 9, fontStyle: "italic", color: MIDGRAY, margin: "10px 0 0 0" }}>
-              Please use <span style={{ fontFamily: "monospace", fontStyle: "normal" }}>"{invoiceNo || "INV"}"</span> as your payment reference.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* ── Notes ── */}
-      {notes && (
-        <div style={{ marginLeft: 6, padding: "0 28px 20px" }}>
-          <p style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.2, color: TEAL, margin: "0 0 5px 0" }}>
-            Notes
-          </p>
-          <p style={{ fontSize: 11, color: MIDGRAY, lineHeight: 1.65, margin: 0 }}>{notes}</p>
-        </div>
-      )}
-
-      {/* ── Footer (dark bar with teal top line) ── */}
-      <div style={{ marginLeft: 6, marginTop: 4 }}>
-        <div style={{ height: 2, background: TEAL }} />
-        <div style={{
-          background: DARK,
-          padding: "12px 28px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="logo" style={{ height: 18, filter: "brightness(0) invert(1)" }} />
-          <div style={{ textAlign: "right" }}>
-            {footerParts.length > 0 && (
-              <p style={{ fontSize: 9, color: "rgba(255,255,255,0.6)", margin: "0 0 2px 0" }}>
-                {footerParts.join("  |  ")}
-              </p>
-            )}
-            <p style={{ fontSize: 9, color: "#3FE0D0", margin: 0 }}>Thank you for your business.</p>
-          </div>
-        </div>
-      </div>
+      {/* ── Footer ── */}
+      <div style={{ height: 1, background: LGRAY, margin: "32px 0 12px" }} />
+      <p style={{ fontSize: 9, color: LGRAY, textAlign: "right", margin: 0 }}>Page 1 of 1</p>
     </div>
   );
 }
