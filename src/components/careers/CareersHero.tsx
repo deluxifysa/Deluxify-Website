@@ -38,14 +38,13 @@ export function CareersHero() {
             Careers at Deluxify
           </span>
           <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-[1.05] ${isLight ? "text-black" : ""}`}>
-            Build the future of{" "}
+            Come Build{" "}
             <span className={`font-[family-name:var(--font-caveat)] text-4xl sm:text-6xl md:text-7xl lg:text-8xl uppercase ${isLight ? "text-black" : "gradient-text"}`}>
-              African AI.
+              With Us.
             </span>
           </h1>
           <p className={`text-lg md:text-xl leading-relaxed max-w-2xl mx-auto ${isLight ? "text-black/55" : "text-white/60"}`}>
-            We&apos;re a small, fast-moving team doing serious work. If you love building things that actually matter,
-            we&apos;d love to hear from you when the time is right.
+            We&apos;re a team of 4 and we&apos;re looking for one or two more people who love building things that solve real problems. No corporate nonsense — just good work.
           </p>
         </motion.div>
       </div>

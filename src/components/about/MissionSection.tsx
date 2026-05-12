@@ -10,7 +10,7 @@ const pillars = [
     icon: Target,
     title: "Our Mission",
     description:
-      "To make AI and premium technology accessible to every South African business. delivering the tools, systems, and strategies that were previously reserved for large corporates, at a price that makes sense for ambitious SMEs and growing enterprises.",
+      "To help South African businesses work smarter by building affordable, practical AI tools — one business at a time.",
     color: "text-[#3FE0D0]",
     bg: "bg-[#2F8F89]/10 border-[#2F8F89]/20",
   },
@@ -18,7 +18,7 @@ const pillars = [
     icon: Eye,
     title: "Our Vision",
     description:
-      "To become South Africa's most trusted AI and technology partner. known for premium quality, measurable results, and a genuine commitment to our clients' long-term success. We build lasting partnerships, not one-off projects.",
+      "A South Africa where small businesses compete on equal footing with large corporations, powered by accessible technology.",
     color: "text-[#3B82F6]",
     bg: "bg-[#3B82F6]/10 border-[#3B82F6]/20",
   },
@@ -26,7 +26,7 @@ const pillars = [
     icon: Heart,
     title: "Our Values",
     description:
-      "Innovation, excellence, collaboration, and integrity. We are honest about what technology can and cannot do. We invest in understanding your business before we write a single line of code. And we measure our success by yours.",
+      "Honesty over hype. Build things that get used. Local first. Move fast, fix fast.",
     color: "text-emerald-400",
     bg: "bg-emerald-600/10 border-emerald-600/20",
   },
@@ -65,25 +65,23 @@ export function MissionSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <AnimatedSection direction="left">
             <h2 className={`text-3xl md:text-4xl font-bold mb-6 ${isLight ? "text-black" : ""}`}>
-              Born in Bloemfontein.{" "}
-              <span className={isLight ? "text-black" : "gradient-text"}>Built for South African ambition.</span>
+              Started in 2024.{" "}
+              <span className={isLight ? "text-black" : "gradient-text"}>Still figuring it out — honestly.</span>
             </h2>
             <div className={`space-y-4 leading-relaxed ${isLight ? "text-black/60" : "text-white/60"}`}>
               <p>
-                We started with a simple observation: South African businesses are filled with
-                talented, driven people. held back by outdated systems, manual processes, and
-                technology that was never built with them in mind.
+                We started Deluxify because we kept seeing the same problem: small South African
+                businesses were drowning in manual work — WhatsApp groups, spreadsheets, copy-pasted
+                emails — while the tools to fix it existed, but no one was making them accessible.
               </p>
               <p>
-                Deluxify was founded to close that gap. We combine AI strategy, custom software
-                development, digital marketing, and managed infrastructure under one roof. so
-                business owners get a single, accountable partner instead of juggling five different
-                agencies.
+                We&apos;re a team of 4. We don&apos;t have 150 clients or 12 offices. What we do have is a
+                genuine obsession with building software that people actually use — not polished demos
+                that gather dust after launch.
               </p>
               <p>
-                Today we serve over 150 businesses across South Africa. from entrepreneurs in
-                Bloemfontein to enterprises in Johannesburg and Cape Town. all operating smarter,
-                growing faster, and competing at a level they never thought possible.
+                Every client we&apos;ve worked with, we&apos;ve stayed close to. We ask what broke,
+                what helped, and what we got wrong. That feedback loop is how we get better.
               </p>
             </div>
           </AnimatedSection>
@@ -91,10 +89,10 @@ export function MissionSection() {
           <AnimatedSection direction="right" delay={0.15}>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { label: "Founded", value: "2023" },
-                { label: "Team Members", value: "28" },
-                { label: "Cities Served", value: "12+" },
-                { label: "Service Capabilities", value: "13+" },
+                { label: "Founded", value: "2024" },
+                { label: "Team Members", value: "4" },
+                { label: "Projects Delivered", value: "10+" },
+                { label: "Still Running Today", value: "100%" },
               ].map((s) => (
                 <div
                   key={s.label}

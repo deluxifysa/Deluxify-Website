@@ -70,29 +70,78 @@ export function CareersOpenRoles() {
           </div>
         </AnimatedSection>
 
-        {/* No vacancies state */}
-        <AnimatedSection delay={0.1}>
-          <div className={cn(
-            "rounded-2xl border-2 border-dashed px-8 py-20 flex flex-col items-center text-center",
-            isLight ? "border-black/12 bg-black/02" : "border-white/10 bg-white/02"
-          )}>
-            <div className={cn(
-              "w-16 h-16 rounded-2xl flex items-center justify-center mb-5",
-              isLight ? "bg-black/06" : "bg-white/06"
-            )}>
-              <BriefcaseIcon className={`w-8 h-8 ${isLight ? "text-black/30" : "text-white/30"}`} />
-            </div>
-            <h3 className={`text-xl font-bold mb-2 ${isLight ? "text-black" : "text-white"}`}>
-              No open positions right now
-            </h3>
-            <p className={`text-sm max-w-sm leading-relaxed mb-1 ${isLight ? "text-black/50" : "text-white/50"}`}>
-              We&apos;re not actively hiring at the moment, but we&apos;re always interested in exceptional people.
-            </p>
-            <p className={`text-sm ${isLight ? "text-black/40" : "text-white/40"}`}>
-              Drop your email and we&apos;ll reach out when something opens up.
-            </p>
-          </div>
-        </AnimatedSection>
+        {/* Open roles */}
+        <div className="space-y-6">
+          {[
+            {
+              title: "Junior Full-Stack Developer",
+              type: "Remote · Part-time or Full-time",
+              description:
+                "You'll work directly with Katleho on client builds. React, Next.js, Node.js. We care more about curiosity and shipping than your CV.",
+              requirements: [
+                "Comfortable with React and basic backend",
+                "Can read and write clean code",
+                "Communicates well async",
+                "Based in South Africa preferred",
+              ],
+            },
+            {
+              title: "AI/Automation Specialist",
+              type: "Remote · Contract",
+              description:
+                "Help us design and build automation workflows and LLM integrations for our clients. You'll work closely with Sipho.",
+              requirements: [
+                "Experience with LLM APIs (OpenAI, Claude, etc.)",
+                "Familiar with n8n, Zapier, or custom automation",
+                "Comfortable with APIs and webhooks",
+                "Can explain technical things simply",
+              ],
+            },
+          ].map((role, i) => (
+            <AnimatedSection key={role.title} delay={0.1 + i * 0.08}>
+              <div className={cn(
+                "rounded-2xl border p-8",
+                isLight ? "bg-white border-black/10 shadow-sm" : "glass-card"
+              )}>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+                  <div>
+                    <h3 className={`text-xl font-bold mb-1 ${isLight ? "text-black" : "text-white"}`}>
+                      {role.title}
+                    </h3>
+                    <span className={`text-sm font-medium ${isLight ? "text-black/50" : "text-white/50"}`}>
+                      {role.type}
+                    </span>
+                  </div>
+                  <a
+                    href="mailto:careers@deluxify.co.za"
+                    className={cn(
+                      "shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200",
+                      isLight
+                        ? "bg-black text-white hover:bg-black/80"
+                        : "bg-gradient-to-r from-[#2F8F89] to-[#3B82F6] text-white shadow-[0_0_14px_rgba(63,224,208,0.25)] hover:shadow-[0_0_20px_rgba(63,224,208,0.4)]"
+                    )}
+                  >
+                    Apply Now
+                  </a>
+                </div>
+                <p className={`text-sm leading-relaxed mb-5 ${isLight ? "text-black/60" : "text-white/60"}`}>
+                  {role.description}
+                </p>
+                <ul className="space-y-2">
+                  {role.requirements.map((req) => (
+                    <li key={req} className={`flex items-start gap-2 text-sm ${isLight ? "text-black/60" : "text-white/60"}`}>
+                      <span className={cn(
+                        "mt-0.5 w-4 h-4 rounded-full flex items-center justify-center text-white text-xs shrink-0",
+                        isLight ? "bg-black" : "bg-[#2F8F89]"
+                      )}>✓</span>
+                      {req}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </AnimatedSection>
+          ))}
+        </div>
 
         {/* Notify me */}
         <AnimatedSection delay={0.15} className="mt-10 max-w-lg mx-auto">

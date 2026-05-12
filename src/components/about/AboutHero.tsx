@@ -38,12 +38,11 @@ export function AboutHero() {
             Who We Are
           </span>
           <h1 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8 leading-[1.05] ${isLight ? "text-black" : ""}`}>
-            Bloemfontein roots.{" "}
-            <span className={isLight ? "text-black" : "gradient-text"}>Global standards.</span>
+            We&apos;re a Small Team{" "}
+            <span className={isLight ? "text-black" : "gradient-text"}>Solving Real Problems.</span>
           </h1>
           <p className={`text-xl leading-relaxed max-w-2xl mx-auto ${isLight ? "text-black/55" : "text-white/60"}`}>
-            Deluxify is South Africa&apos;s premium AI and technology partner. making intelligent,
-            enterprise-grade digital systems accessible to every ambitious business, regardless of size.
+            Deluxify was started in 2024 by developers who were tired of watching South African businesses drown in spreadsheets and WhatsApp groups. We build practical software that actually gets used.
           </p>
         </motion.div>
       </div>

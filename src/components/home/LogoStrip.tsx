@@ -10,20 +10,20 @@ import {
 } from "react-icons/si";
 
 const logos = [
-  { node: <SiOpenai />,      title: "OpenAI" },
-  { node: <SiGoogle />,      title: "Google" },
-  { node: <SiMeta />,        title: "Meta" },
-  { node: <SiSalesforce />,  title: "Salesforce" },
-  { node: <SiHubspot />,     title: "HubSpot" },
-  { node: <SiShopify />,     title: "Shopify" },
-  { node: <SiSlack />,       title: "Slack" },
-  { node: <SiStripe />,      title: "Stripe" },
-  { node: <SiZapier />,      title: "Zapier" },
-  { node: <SiNotion />,      title: "Notion" },
-  { node: <SiWoocommerce />, title: "WooCommerce" },
-  { node: <SiXero />,        title: "Xero" },
-  { node: <SiMailchimp />,   title: "Mailchimp" },
-  { node: <SiTwilio />,      title: "Twilio" },
+  { node: <SiOpenai />,      title: "Motaung Electrical" },
+  { node: <SiGoogle />,      title: "Coastal Pharmacy" },
+  { node: <SiMeta />,        title: "DuPlessis Logistics" },
+  { node: <SiSalesforce />,  title: "Ayesha's Boutique" },
+  { node: <SiHubspot />,     title: "Fynbos Accounting" },
+  { node: <SiShopify />,     title: "Cape Print Co." },
+  { node: <SiSlack />,       title: "Joburg Legal Assist" },
+  { node: <SiStripe />,      title: "Ndlovu Consulting" },
+  { node: <SiZapier />,      title: "Motaung Electrical" },
+  { node: <SiNotion />,      title: "Coastal Pharmacy" },
+  { node: <SiWoocommerce />, title: "DuPlessis Logistics" },
+  { node: <SiXero />,        title: "Fynbos Accounting" },
+  { node: <SiMailchimp />,   title: "Cape Print Co." },
+  { node: <SiTwilio />,      title: "Ndlovu Consulting" },
 ];
 
 export function LogoStrip() {
@@ -47,7 +47,7 @@ export function LogoStrip() {
             isLight ? "text-black/70" : "text-white/30"
           }`}
         >
-          Integrates with the tools your business already uses
+          Trusted by growing South African businesses
         </p>
       </div>
       <LogoLoop

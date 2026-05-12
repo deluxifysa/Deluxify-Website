@@ -6,81 +6,42 @@ import { useEffect, useState } from "react";
 
 const caseStudies = [
   {
-    client: "RetailPro SA",
-    industry: "Retail · AI Automation + Chatbot",
+    client: "Motaung Electrical",
+    industry: "Trade Services · Web App + Automation",
     quote:
-      "We cut costs by 60% and our customers are happier than ever. The ROI was clear within the first month.",
-    author: "Thabo Nkosi",
-    role: "CEO",
-    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=60",
-    stats: [
-      { value: "−60%", label: "Support Costs", sub: "From R480K to R192K/yr" },
-      { value: "99%", label: "Faster Response", sub: "6 hours → under 90 seconds" },
-    ],
-  },
-  {
-    client: "HealthSync Clinics",
-    industry: "Healthcare · AI Chatbot + Integrations",
-    quote:
-      "The no-show rate dropped by nearly 70%. That alone paid for the entire project in the first two months.",
-    author: "Priya Govender",
-    role: "Founder",
-    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=60",
-    stats: [
-      { value: "R1.1M", label: "Revenue Recovered", sub: "In the first year" },
-      { value: "−67%", label: "No-show Rate", sub: "28% down to 9%" },
-    ],
-  },
-  {
-    client: "LogiMove Logistics",
-    industry: "Logistics · System Integrations + Automation",
-    quote:
-      "What used to take 8 hours of manual work now happens automatically in minutes. Our team is finally doing strategic work.",
-    author: "Marcus van der Berg",
-    role: "Operations Director",
-    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=60",
-    stats: [
-      { value: "94%", label: "Admin Reduced", sub: "8 hrs/day → 30 min/day" },
-      { value: "R240K", label: "Annual Savings", sub: "New operational saving" },
-    ],
-  },
-  {
-    client: "PropVault Realty",
-    industry: "Real Estate · AI Chatbot + Lead Automation",
-    quote:
-      "We went from missing 40% of leads to converting nearly double our previous rate. The AI paid for itself in the first deal.",
-    author: "Zanele Mokoena",
-    role: "Sales Director",
-    photo: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&auto=format&fit=crop&q=60",
-    stats: [
-      { value: "+137%", label: "Lead Conversion", sub: "8% up to 19%" },
-      { value: "R2.1M", label: "Revenue Added", sub: "Per year from AI" },
-    ],
-  },
-  {
-    client: "MenuMaster Restaurant Group",
-    industry: "Hospitality · AI Automation + WhatsApp Bot",
-    quote:
-      "Revenue grew 23% in the first quarter, and our staff actually enjoy coming to work now. Game-changing.",
-    author: "Jean-Pierre Rousseau",
+      "Deluxify built us a job-tracking system that replaced our WhatsApp chaos. It took two weeks and saved us hours every day. Worth every cent.",
+    author: "Lebo Motaung",
     role: "Owner",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=60",
+    photo: "",
     stats: [
-      { value: "23%", label: "Revenue Growth", sub: "In the first quarter" },
-      { value: "90%", label: "Faster Orders", sub: "4–7 min → 30 seconds" },
+      { value: "100%", label: "Jobs Tracked Digitally", sub: "Previously managed via WhatsApp" },
+      { value: "~3 hrs", label: "Admin Saved Daily", sub: "Built and live in 18 days" },
     ],
   },
   {
-    client: "EdPath Learning",
-    industry: "EdTech · AI Consulting + Custom AI",
+    client: "Coastal Pharmacy Group",
+    industry: "Healthcare Retail · Automation + Integration",
     quote:
-      "Our completion rate more than doubled. Students feel supported around the clock, and our team can focus on curriculum.",
-    author: "Dr. Ayesha Moosa",
-    role: "CEO",
-    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop&q=60",
+      "I was sceptical at first — we're a small pharmacy, not a tech company. But the inventory automation they set up genuinely changed how we work. Highly recommend.",
+    author: "Priya Naidoo",
+    role: "Manager",
+    photo: "",
     stats: [
-      { value: "+122%", label: "Completion Rate", sub: "32% up to 71%" },
-      { value: "−70%", label: "Support Costs", sub: "R180K down to R54K/yr" },
+      { value: "−71%", label: "Stock-out Incidents", sub: "Setup completed in 11 days" },
+      { value: "Zero", label: "New Hardware Needed", sub: "Integrated with existing POS" },
+    ],
+  },
+  {
+    client: "DuPlessis Logistics",
+    industry: "Transport & Logistics · Custom Dashboard",
+    quote:
+      "They built a driver scheduling tool in under a month. It's not perfect yet but the team is responsive and keeps improving it. Good value for money.",
+    author: "Gerhard du Plessis",
+    role: "Director",
+    photo: "",
+    stats: [
+      { value: "−65%", label: "Scheduling Time", sub: "12 drivers across multiple routes" },
+      { value: "−40%", label: "Driver No-shows", sub: "Via SMS confirmations" },
     ],
   },
 ];

@@ -10,46 +10,46 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const testimonials = [
   {
     id: "t-1",
-    name: "Thabo Nkosi",
-    role: "CEO, RetailPro SA",
-    avatar: "TN",
-    avatarUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&auto=format&fit=crop&q=60",
+    name: "Lebo Motaung",
+    role: "Owner, Motaung Electrical",
+    avatar: "LM",
+    avatarUrl: "/avatars/placeholder.jpg",
     rating: 5,
-    quote: "Deluxify didn't just build us a chatbot — they redesigned our entire customer experience. One AI system now handles 95% of our support tickets. Costs dropped 60% in month one.",
-    highlight: "60% cost reduction",
+    quote: "Deluxify built us a job-tracking system that replaced our WhatsApp chaos. It took two weeks and saved us hours every day. Worth every cent.",
+    highlight: "Hours saved every day",
     glowColor: "blue" as const,
   },
   {
     id: "t-2",
-    name: "Priya Govender",
-    role: "Founder, HealthSync Clinics",
-    avatar: "PG",
-    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=60",
+    name: "Priya Naidoo",
+    role: "Manager, Coastal Pharmacy Group",
+    avatar: "PN",
+    avatarUrl: "/avatars/placeholder.jpg",
     rating: 5,
-    quote: "From the strategy session to go-live, Deluxify was exceptional. Our AI booking system reduced no-shows by 67% and recovered over R1.1 million in revenue in the first year.",
-    highlight: "R1.1M revenue recovered",
+    quote: "I was sceptical at first — we're a small pharmacy, not a tech company. But the inventory automation they set up genuinely changed how we work. Highly recommend.",
+    highlight: "Inventory fully automated",
     glowColor: "purple" as const,
   },
   {
     id: "t-3",
-    name: "Marcus van der Berg",
-    role: "Operations Director, LogiMove",
-    avatar: "MV",
-    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=60",
-    rating: 5,
-    quote: "8 hours of daily manual data entry — gone. Deluxify connected our entire tech stack and automated our billing pipeline. Our team now focuses on strategy, not spreadsheets.",
-    highlight: "8 hours saved daily",
+    name: "Gerhard du Plessis",
+    role: "Director, DuPlessis Logistics",
+    avatar: "GD",
+    avatarUrl: "/avatars/placeholder.jpg",
+    rating: 4,
+    quote: "They built a driver scheduling tool in under a month. It's not perfect yet but the team is responsive and keeps improving it. Good value for money.",
+    highlight: "Scheduling time cut by 65%",
     glowColor: "green" as const,
   },
   {
     id: "t-4",
-    name: "Zanele Mokoena",
-    role: "Sales Director, PropVault Realty",
-    avatar: "ZM",
-    avatarUrl: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&auto=format&fit=crop&q=60",
+    name: "Ayesha Davids",
+    role: "Founder, Ayesha's Online Boutique",
+    avatar: "AD",
+    avatarUrl: "/avatars/placeholder.jpg",
     rating: 5,
-    quote: "We went from missing 40% of leads to converting nearly double our previous rate. The AI paid for itself in the first deal.",
-    highlight: "+137% lead conversion",
+    quote: "As a small business owner I needed something simple. Deluxify didn't oversell me — they built exactly what I needed and walked me through everything.",
+    highlight: "Simple, practical, no fluff",
     glowColor: "orange" as const,
   },
 ];
@@ -79,12 +79,11 @@ export function TestimonialsSection() {
             Client Results
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
-            Trusted by businesses that{" "}
-            <span className="font-[family-name:var(--font-caveat)] text-white uppercase text-4xl md:text-6xl">Demand Results</span>
+            What our clients{" "}
+            <span className="font-[family-name:var(--font-caveat)] text-white uppercase text-4xl md:text-6xl">Actually Say</span>
           </h2>
           <p className="text-white/50 text-lg max-w-2xl mx-auto">
-            Our work is measured in revenue recovered, hours reclaimed, and
-            businesses transformed — not vanity metrics.
+            Real feedback from real South African business owners — no cherry-picked enterprise logos, just honest results.
           </p>
         </AnimatedSection>
 

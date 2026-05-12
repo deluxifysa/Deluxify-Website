@@ -137,7 +137,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs mb-6">
-              South Africa&apos;s #1 AI solutions company. We help businesses automate, scale, and thrive in the age of artificial intelligence.
+              A small South African team building practical AI tools for real businesses. We started in 2024 and we&apos;re still growing — one client at a time.
             </p>
             <div className="space-y-2 text-sm text-white/40">
               <div className="flex items-center gap-2">
@@ -181,7 +181,7 @@ export function Footer() {
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <p className="text-white/30 text-sm">
-              © {new Date().getFullYear()} Deluxify (Pty) Ltd. All rights reserved.
+              © 2024 Deluxify (Pty) Ltd · Built in South Africa
             </p>
             <Link
               href="/staff/login"

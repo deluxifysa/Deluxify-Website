@@ -9,39 +9,34 @@ import { cn } from "@/lib/utils";
 
 const faqs = [
   {
-    question: "What makes Deluxify different from other agencies?",
+    question: "Are you a big agency or a small team?",
     answer:
-      "Most agencies specialise in one thing. a web agency, a marketing agency, an AI consultancy. We offer all of it under one roof, with one accountable team. That means no gaps, no finger-pointing between vendors, and a technology strategy that actually fits together. Every solution we build is tied to a measurable business outcome.",
+      "We're a small team of 4 based in South Africa. That means you deal directly with the people building your product — no account managers, no layers. We think that's a good thing.",
   },
   {
-    question: "How long does it take to see results?",
+    question: "How long does a project typically take?",
     answer:
-      "It depends on the service. AI automations typically deliver measurable time savings within the first week of going live. SEO and content strategies show meaningful movement within 60–90 days. Development projects are scoped with clear milestones so you always know what's coming and when.",
+      "Most of our builds take 2–6 weeks depending on complexity. A simple automation can be live in under two weeks. We'll give you a realistic timeline before we start — no surprises.",
   },
   {
-    question: "Do I need any technical knowledge to work with you?",
+    question: "Do I need to be tech-savvy to work with you?",
     answer:
-      "None at all. We handle every technical aspect. from architecture to deployment and ongoing maintenance. You manage your business; we manage the technology. Our dashboards and reporting are built for decision-makers, not developers.",
+      "Not at all. We handle everything technical and explain things in plain language. If you can use WhatsApp and email, you can use what we build.",
   },
   {
-    question: "Can you work with my existing tools and software?",
+    question: "What happens if something breaks after launch?",
     answer:
-      "Yes. We integrate with virtually any platform. Salesforce, HubSpot, SAP, Microsoft 365, Google Workspace, Shopify, WooCommerce, WhatsApp Business API, and hundreds more via REST APIs and custom connectors. We start by mapping what you already have, then build around it.",
+      "All our projects include a 30-day support window after launch. After that, we offer affordable monthly maintenance plans. We don't disappear once the invoice is paid.",
   },
   {
-    question: "Is my data safe with Deluxify?",
+    question: "Do you work with businesses outside South Africa?",
     answer:
-      "Absolutely. We are fully POPIA-compliant. South Africa's data protection law. All data is encrypted in transit and at rest, stored in South African infrastructure where required, and never used to train models for other clients. We sign data processing agreements with every client.",
+      "We're based in SA and our pricing is in ZAR, but we've done remote work for clients in Botswana and Namibia. If you're further afield, reach out and we'll see if it makes sense.",
   },
   {
-    question: "What does a typical engagement look like?",
+    question: "Can I see examples of your work?",
     answer:
-      "It starts with a free strategy call where we understand your business, your goals, and your current challenges. From there we propose a scoped solution with clear deliverables, timelines, and pricing. Once approved, we assign a dedicated team and keep you updated throughout. Most clients are live within 2–6 weeks.",
-  },
-  {
-    question: "Are there lock-in contracts?",
-    answer:
-      "No. All retainer plans are month-to-month. We're confident in the value we deliver, so we don't need long contracts to keep clients. Clients who do commit to 12-month plans receive a 15% discount. but it's always your choice.",
+      "We have a few case studies on the site — but because many clients prefer privacy, not everything is public. Book a call and we'll walk you through relevant examples for your industry.",
   },
 ];
 

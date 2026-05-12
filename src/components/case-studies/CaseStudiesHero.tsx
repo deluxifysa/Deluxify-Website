@@ -34,12 +34,11 @@ export function CaseStudiesHero() {
             Proven Results
           </span>
           <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-balance ${isLight ? "text-black" : ""}`}>
-            Real businesses.{" "}
-            <span className={isLight ? "text-black" : "gradient-text"}>Measurable results.</span>
+            What We&apos;ve{" "}
+            <span className={isLight ? "text-black" : "gradient-text"}>Built So Far.</span>
           </h1>
           <p className={`text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${isLight ? "text-black/55" : "text-white/60"}`}>
-            Every case study below is a before-and-after story. with the exact metrics,
-            the timeline, and the impact on revenue, efficiency, and growth.
+            We&apos;re early, so this is a short list — but every project here is real, delivered on time, and still running today.
           </p>
         </motion.div>
       </div>

@@ -7,56 +7,38 @@ import { useEffect, useState } from "react";
 
 const team = [
   {
-    name: "Sipho Dlamini",
-    role: "Co-founder & CEO",
-    bio: "Former Google engineer and McKinsey consultant. 10 years in AI and machine learning. Passionate about unlocking African economic potential through technology.",
-    initials: "SD",
+    name: "Katleho Matsaseng",
+    role: "Founder & Lead Developer",
+    bio: "Katleho started Deluxify after seeing how many SA businesses were drowning in manual processes. He builds most of what we ship.",
+    initials: "KM",
     gradient: "from-brand-500 to-brand-700",
     linkedin: "#",
     twitter: "#",
   },
   {
-    name: "Aisha Patel",
-    role: "Co-founder & CTO",
-    bio: "Ex-Amazon AI research scientist with a PhD in NLP from UCT. Architect of Deluxify's core AI platform and responsible for all technical strategy.",
-    initials: "AP",
+    name: "Zanele Khumalo",
+    role: "Operations & Client Success",
+    bio: "Zanele makes sure projects stay on track and clients stay informed. She's the reason things don't fall through the cracks.",
+    initials: "ZK",
     gradient: "from-accent-500 to-accent-700",
     linkedin: "#",
     twitter: "#",
   },
   {
-    name: "Liam van Rensburg",
-    role: "Head of Engineering",
-    bio: "Full-stack architect with 12 years of experience building scalable systems. Previously led engineering at two successful fintech startups.",
-    initials: "LV",
+    name: "Reza Isaacs",
+    role: "UI/UX & Frontend",
+    bio: "Reza designs everything you see. He cares deeply about making software that people actually want to use.",
+    initials: "RI",
     gradient: "from-emerald-500 to-teal-700",
     linkedin: "#",
     twitter: "#",
   },
   {
-    name: "Nomsa Khumalo",
-    role: "Head of Client Success",
-    bio: "Operations expert and MBA holder from Wits Business School. Ensures every Deluxify client achieves their ROI targets within the first 90 days.",
-    initials: "NK",
+    name: "Sipho Dlamini",
+    role: "AI & Integrations",
+    bio: "Sipho handles the AI side — LLM integrations, automation logic, and making sure things work at scale.",
+    initials: "SD",
     gradient: "from-orange-500 to-amber-700",
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Tariq Hassan",
-    role: "Lead AI Engineer",
-    bio: "Specialises in building production-grade LLM pipelines and RAG systems. Has deployed AI solutions across 60+ enterprise clients.",
-    initials: "TH",
-    gradient: "from-pink-500 to-rose-700",
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Candice Botha",
-    role: "Head of Marketing",
-    bio: "Growth strategist and brand builder with experience scaling B2B SaaS companies from zero to R100M+ ARR in emerging markets.",
-    initials: "CB",
-    gradient: "from-sky-500 to-blue-700",
     linkedin: "#",
     twitter: "#",
   },
@@ -83,12 +65,12 @@ export function TeamSection() {
             The Team
           </span>
           <h2 className={`text-4xl md:text-5xl font-bold tracking-tight mb-4 ${isLight ? "text-black" : ""}`}>
-            World-class talent,{" "}
-            <span className={isLight ? "text-black" : "gradient-text"}>African heart</span>
+            A small team,{" "}
+            <span className={isLight ? "text-black" : "gradient-text"}>doing real work</span>
           </h2>
           <p className={`text-lg max-w-2xl mx-auto ${isLight ? "text-black/55" : "text-white/50"}`}>
-            Our team brings together expertise from Google, Amazon, McKinsey, and Africa&apos;s leading
-            tech ecosystem. We&apos;re united by a shared mission: to put AI in the hands of every African business.
+            There are 4 of us. We&apos;re based in South Africa, we started in 2024, and we work directly
+            with every client. No outsourcing, no middlemen — just a focused team that cares about the work.
           </p>
         </AnimatedSection>
 

@@ -11,34 +11,34 @@ const steps = [
   {
     icon: Clock,
     step: "01",
-    title: "Book your consultation",
+    title: "Book a free 30-minute call",
     description:
-      "Pay a once-off consultation fee and book your AI & Technology Strategy session with one of our experts.",
+      "Tell us what your business does and what's slowing you down. No hard sell — just a conversation to see if we're the right fit.",
   },
   {
     icon: FileText,
     step: "02",
-    title: "We assess your business",
+    title: "We scope your project",
     description:
-      "During the session we deep-dive into your operations, goals, and technology landscape to identify the highest-impact opportunities.",
+      "We map out what needs to be built, how long it will take, and what it will cost. You get a clear, plain-language proposal — no jargon.",
   },
   {
     icon: CheckCircle,
     step: "03",
-    title: "Receive your custom plan & invoice",
+    title: "We build it and support it",
     description:
-      "Within 48 hours you receive a tailored technology proposal scoped specifically to your business with a clear, itemised invoice. No surprises.",
+      "Once approved, we get to work. Most projects are live within 2–4 weeks. We include 30-day support after launch as standard.",
   },
 ];
 
 const included = [
-  "60-minute strategy session with a senior AI consultant",
-  "Full assessment of your current technology stack",
-  "Identification of automation and AI opportunities",
-  "Prioritised roadmap tailored to your budget and goals",
-  "Custom proposal with itemised scope and deliverables",
-  "Delivered to your inbox within 48 hours",
-  "No obligation to proceed — but most clients do",
+  "1 automation workflow built and deployed",
+  "WhatsApp or email notifications included",
+  "2 rounds of revisions",
+  "30-day support after launch",
+  "Plain-language documentation",
+  "Direct access to the developer building it",
+  "No lock-in — month-to-month or once-off",
 ];
 
 export function PricingSection() {
@@ -64,12 +64,11 @@ export function PricingSection() {
             How It Works
           </span>
           <h2 className={`text-3xl md:text-5xl font-bold tracking-tight mb-4 ${isLight ? "text-black" : ""}`}>
-            One consultation.{" "}
-            <span className={isLight ? "text-black" : "gradient-text"}>A plan built for you.</span>
+            Simple pricing.{" "}
+            <span className={isLight ? "text-black" : "gradient-text"}>No surprises.</span>
           </h2>
           <p className={`text-lg max-w-2xl mx-auto ${isLight ? "text-black/55" : "text-white/50"}`}>
-            We don&apos;t believe in generic packages. Every business is different,
-            so every proposal is built from scratch, based on your actual needs.
+            We&apos;re a small team, so our pricing is straightforward. The Starter plan covers most first projects — book a call and we&apos;ll confirm what fits your situation.
           </p>
         </AnimatedSection>
 
@@ -122,14 +121,14 @@ export function PricingSection() {
 
               <div className="mb-6">
                 <span className={`text-xs font-bold uppercase tracking-widest ${isLight ? "text-black/50" : "text-[#3FE0D0]"}`}>
-                  Consultation Fee
+                  Starter Plan
                 </span>
                 <div className="flex items-baseline gap-2 mt-2 mb-1">
-                  <span className={`text-4xl sm:text-5xl font-bold ${isLight ? "text-black" : ""}`}>R 650</span>
+                  <span className={`text-4xl sm:text-5xl font-bold ${isLight ? "text-black" : ""}`}>R 8 500</span>
                   <span className={`text-sm ${isLight ? "text-black/40" : "text-white/40"}`}>once-off</span>
                 </div>
                 <p className={`text-sm ${isLight ? "text-black/55" : "text-white/50"}`}>
-                  VAT inclusive. Applied as a credit if you proceed with any project.
+                  Perfect for small businesses ready to automate one key process. VAT inclusive.
                 </p>
               </div>
 
@@ -145,12 +144,12 @@ export function PricingSection() {
               </div>
 
               <Link href="/book-call" className="btn-primary w-full justify-center text-base py-4 group">
-                Book Your Consultation
+                Book a Free Call
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
 
               <p className={`text-xs text-center mt-4 font-medium ${isLight ? "text-black/70" : "text-white/60"}`}>
-                After your session, your custom proposal arrives within 48 hours.
+                Need something bigger? Ask us about our Growth (R 22 000) or Scale (custom) plans.
               </p>
             </div>
             </BorderGlow>

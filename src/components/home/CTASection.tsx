@@ -50,18 +50,17 @@ export function CTASection() {
             </span>
 
             <h2 className={`text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-6 text-balance ${isLight ? "text-black" : ""}`}>
-              Ready to build something
-              <span className={isLight ? " text-black" : " gradient-text"}> powerful?</span>
+              Ready to stop doing
+              <span className={isLight ? " text-black" : " gradient-text"}> it manually?</span>
             </h2>
 
             <p className={`text-lg max-w-2xl mx-auto mb-10 leading-relaxed ${isLight ? "text-black/55" : "text-white/60"}`}>
-              Join 150+ South African businesses that chose Deluxify as their technology partner.
-              One strategy call is all it takes to see exactly what&apos;s possible for your business.
+              Book a free 30-minute call. We&apos;ll listen, ask questions, and tell you honestly whether we can help — and what it would cost.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/contact" className="btn-primary text-base px-8 py-4 group">
-                Book a Strategy Call
+                Book a Free Call
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link href="/services" className="btn-secondary text-base px-8 py-4 group">

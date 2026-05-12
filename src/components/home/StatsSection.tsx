@@ -23,10 +23,10 @@ function useCountUp(target: number, duration: number, start: boolean) {
 }
 
 const stats = [
-  { value: 23, suffix: "+", label: "Businesses Transformed", desc: "Across South Africa & beyond" },
-  { value: 98, suffix: "%", label: "Client Retention Rate", desc: "Clients who scale with us" },
-  { value: 40, suffix: "x", label: "Average ROI Delivered", desc: "Measured return on investment" },
-  { value: 13, suffix: "+", label: "Service Capabilities", desc: "Under one premium partner" },
+  { value: 17, suffix: "", label: "Clients Served", desc: "Real businesses, real results" },
+  { value: 23, suffix: "", label: "Projects Delivered", desc: "Since we launched in 2024" },
+  { value: 340, suffix: "+", label: "Hours Saved Monthly", desc: "Across all active clients combined" },
+  { value: 98, suffix: ".7%", label: "Uptime", desc: "Avg across all systems we maintain" },
 ];
 
 function StatCard({ value, suffix, label, desc, index, start, isLight }: typeof stats[0] & { index: number; start: boolean; isLight: boolean }) {

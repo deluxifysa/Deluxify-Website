@@ -65,8 +65,8 @@ export function HeroSection() {
           <motion.div variants={item}>
             <span className="section-tag mb-6">
               <Sparkles className="w-3 h-3" />
-              <span className="sm:hidden">RSA&apos;s Premium AI &amp; Technology Partner</span>
-              <span className="hidden sm:inline">South Africa&apos;s Premium AI &amp; Technology Partner</span>
+              <span className="sm:hidden">Built in South Africa · Est. 2024</span>
+              <span className="hidden sm:inline">Built in South Africa · Est. 2024</span>
             </span>
           </motion.div>
 
@@ -75,8 +75,8 @@ export function HeroSection() {
             variants={item}
             className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05] text-balance max-w-5xl mb-6 text-black dark:text-white"
           >
-            Luxury Technology.{" "}
-            <span className="gradient-text">Intelligent Growth.</span>
+            We Build AI Tools That{" "}
+            <span className="gradient-text">Actually Work for Your Business.</span>
           </motion.h1>
 
           {/* Sub-headline */}
@@ -84,14 +84,13 @@ export function HeroSection() {
             variants={item}
             className="text-lg md:text-xl max-w-2xl leading-relaxed mb-10 text-balance text-black/55 dark:text-white/60"
           >
-            We design, build, and automate powerful digital systems that transform your business.
-            From AI and custom software to marketing and managed infrastructure.
+            Deluxify helps South African businesses automate the boring stuff — so your team can focus on what matters. We&apos;re a small team that moves fast and delivers real results.
           </motion.p>
 
           {/* CTAs */}
           <motion.div variants={item} className="flex flex-col sm:flex-row items-center gap-4">
             <Link href="/contact" className="btn-primary text-base px-8 py-4 group">
-              Book a Strategy Call
+              Book a Free Call
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link href="/services" className="btn-secondary text-base px-8 py-4 group">
@@ -109,11 +108,10 @@ export function HeroSection() {
           >
             <div className="flex -space-x-3">
               {[
-                { src: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&auto=format&fit=crop&q=60", fallback: "TN" },
-                { src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=60", fallback: "PG" },
-                { src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=60", fallback: "MV" },
-                { src: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&auto=format&fit=crop&q=60", fallback: "ZM" },
-                { src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=60", fallback: "JP" },
+                { src: "", fallback: "TM" },
+                { src: "", fallback: "SK" },
+                { src: "", fallback: "RP" },
+                { src: "", fallback: "ND" },
               ].map((a, i) => (
                 <Avatar
                   key={i}
@@ -126,13 +124,11 @@ export function HeroSection() {
               ))}
             </div>
             <span>
-              <strong className="font-semibold text-black dark:text-white">150+</strong> businesses
-              transformed across South Africa
+              Trusted by <strong className="font-semibold text-black dark:text-white">14 growing businesses</strong> across South Africa
             </span>
             <span className="hidden sm:block w-1 h-1 rounded-full bg-black/20 dark:bg-white/20" />
             <span>
-              <strong className="font-semibold text-black dark:text-white">4.9/5</strong> average client
-              rating
+              <strong className="font-semibold text-black dark:text-white">4.8/5</strong> average client rating
             </span>
           </motion.div>
         </motion.div>
@@ -160,10 +156,10 @@ export function HeroSection() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  { label: "Processes Automated", value: "14,200+", change: "+31%" },
-                  { label: "Hours Saved", value: "4,800+", change: "+22%" },
-                  { label: "Revenue Generated", value: "R4.7M", change: "+47%" },
-                  { label: "System Uptime", value: "99.97%", change: "SLA-backed" },
+                  { label: "Tasks Automated", value: "1,200+", change: "+18%" },
+                  { label: "Hours Saved Monthly", value: "340+", change: "+12%" },
+                  { label: "Projects Delivered", value: "23", change: "Since 2024" },
+                  { label: "System Uptime", value: "98.7%", change: "Avg across clients" },
                 ].map((stat) => (
                   <div
                     key={stat.label}
