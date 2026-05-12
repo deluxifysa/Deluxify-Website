@@ -234,10 +234,8 @@ async function downloadInvoicePDF(
   const totW  = 120;
   const totLX = MR - totW;
   const totRows: [string, string][] = [
-    ["Subtotal",            formatCurrency(invoice.subtotal)],
-    ["Total excluding tax", formatCurrency(invoice.subtotal)],
-    [`VAT (${invoice.tax_rate}% on ${formatCurrency(invoice.subtotal)})`, formatCurrency(invoice.tax_amount)],
-    ["Total",               formatCurrency(invoice.total)],
+    ["Subtotal",                        formatCurrency(invoice.subtotal)],
+    [`VAT included (${invoice.tax_rate}%)`, formatCurrency(invoice.tax_amount)],
   ];
   totRows.forEach(([label, val]) => {
     doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
@@ -470,10 +468,8 @@ function InvoicePreview({
   ];
 
   const totRows = [
-    { label: "Subtotal",            value: formatCurrency(subtotal) },
-    { label: "Total excluding tax", value: formatCurrency(subtotal) },
-    { label: `VAT (${taxRate}% on ${formatCurrency(subtotal)})`, value: formatCurrency(tax_amount) },
-    { label: "Total",               value: formatCurrency(total) },
+    { label: "Subtotal",                   value: formatCurrency(subtotal) },
+    { label: `VAT included (${taxRate}%)`, value: formatCurrency(tax_amount) },
   ];
 
   return (

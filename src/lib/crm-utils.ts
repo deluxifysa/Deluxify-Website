@@ -44,7 +44,7 @@ export function computeInvoiceTotals(
     0
   );
   const tax_amount = Math.round(subtotal * (taxRate / 100));
-  return { subtotal, tax_amount, total: subtotal + tax_amount };
+  return { subtotal, tax_amount, total: subtotal };
 }
 
 /** Group records by YYYY-MM key, sum a numeric field */
