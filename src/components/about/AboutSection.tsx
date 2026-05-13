@@ -27,22 +27,22 @@ const logos = [
 ];
 
 const achievements = [
-  { value: "150+", label: "Businesses Served" },
-  { value: "28",   label: "Team Members" },
-  { value: "12+",  label: "Cities Reached" },
-  { value: "13+",  label: "Service Capabilities" },
+  { value: "23+",  label: "Businesses Served" },
+  { value: "4",    label: "Team Members" },
+  { value: "3+",   label: "Cities Reached" },
+  { value: "8+",   label: "Service Capabilities" },
 ];
 
 const contentSections = [
   {
     title: "Our Mission",
     content:
-      "To make AI and premium technology accessible to every South African business — delivering the tools, systems, and strategies previously reserved for large corporates, at a price that makes sense for ambitious SMEs and growing enterprises.\n\nWe believe every business, regardless of size, deserves enterprise-grade digital systems. Our work closes the gap between ambition and capability.\n\nWe measure our success by yours — in revenue recovered, hours reclaimed, and teams empowered to do what they do best.",
+      "To make AI and practical technology accessible to South African businesses — delivering tools and systems that were previously only available to large corporates, at a price that makes sense for growing SMEs.\n\nWe believe every business deserves software that actually fits how it works. Our job is to close the gap between the ambition of local entrepreneurs and the tools available to them.\n\nWe measure our success simply: does the client still use it six months later? That's the bar.",
   },
   {
     title: "Our Story",
     content:
-      "We started with a simple observation: South African businesses are filled with talented, driven people — held back by outdated systems and technology that was never built with them in mind.\n\nDeluxify was founded in Bloemfontein to close that gap. We combine AI strategy, custom software, digital marketing, and managed infrastructure under one roof.\n\nToday we serve over 150 businesses across South Africa — from entrepreneurs in Bloemfontein to enterprises in Johannesburg and Cape Town — all competing at a level they never thought possible.",
+      "We started Deluxify in 2024 after watching too many South African businesses run on WhatsApp groups and spreadsheets — not because they wanted to, but because nothing better had been built for them.\n\nWe're based in Bloemfontein and currently a team of four. We've shipped projects for clients in Bloemfontein, Johannesburg, and Cape Town. We're not big yet — but every client we've worked with, we've stayed close to.\n\nWe're early. We're honest about that. And we're building the kind of company we'd want to hire ourselves.",
   },
 ];
 
@@ -78,9 +78,8 @@ export function AboutSection() {
             <span className={`font-[family-name:var(--font-caveat)] uppercase text-5xl md:text-6xl ${isLight ? "text-black" : "gradient-text"}`}>Global standards.</span>
           </h1>
           <p className={`text-lg md:text-xl leading-relaxed ${isLight ? "text-black/60" : "text-white/55"}`}>
-            South Africa&apos;s premium AI and technology partner — making intelligent,
-            enterprise-grade digital systems accessible to every ambitious business,
-            regardless of size or location.
+            We build practical AI and custom software for South African businesses — the kind of tools
+            that actually get used, not demos that look good in a pitch and break in production.
           </p>
         </motion.div>
 
@@ -109,10 +108,10 @@ export function AboutSection() {
                 />
                 <div>
                   <p className="mb-2 text-base font-semibold text-white">
-                    South Africa&apos;s #1 AI solutions company
+                    Built in Bloemfontein. Shipped to real clients.
                   </p>
                   <p className="text-sm text-white/60">
-                    Helping businesses automate, scale, and thrive in the age of artificial intelligence.
+                    We're a small team solving real problems — no fluff, no demos that gather dust.
                   </p>
                 </div>
                 <Link
@@ -165,7 +164,7 @@ export function AboutSection() {
                 Our achievements in numbers
               </h2>
               <p className="max-w-xl text-white/50 text-sm md:text-base">
-                Real impact across South Africa — measured in businesses transformed, hours reclaimed, and revenue recovered.
+                Early days — but every number here is real. No inflated pipeline counts, no agency fluff.
               </p>
             </div>
             <div className="relative grid grid-cols-2 gap-x-4 gap-y-10 md:flex md:flex-wrap md:justify-between">

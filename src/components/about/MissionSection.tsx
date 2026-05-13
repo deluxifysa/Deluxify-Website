@@ -91,7 +91,7 @@ export function MissionSection() {
               {[
                 { label: "Founded", value: "2024" },
                 { label: "Team Members", value: "4" },
-                { label: "Projects Delivered", value: "10+" },
+                { label: "Clients Served", value: "23+" },
                 { label: "Still Running Today", value: "100%" },
               ].map((s) => (
                 <div
