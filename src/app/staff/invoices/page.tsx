@@ -111,6 +111,7 @@ async function downloadInvoicePDF(
     ["Invoice number", invoice.invoice_no],
     ["Date of issue",  formatDate(invoice.issue_date)],
     ["Due date",       invoice.due_date ? formatDate(invoice.due_date) : "—"],
+    ...((invoice as any).project_name ? [["Project", (invoice as any).project_name] as [string, string]] : []),
     ...(company.vat_number ? [["VAT Registration", company.vat_number] as [string, string]] : []),
   ];
   const LBL_W = 44;
@@ -477,6 +478,7 @@ function InvoicePreview({
     { label: "Invoice number",  value: invoiceNo || "DRAFT" },
     { label: "Date of issue",   value: issueDate },
     { label: "Due date",        value: dueDate || "—" },
+    ...(project ? [{ label: "Project", value: project }] : []),
     ...(company?.vat_number ? [{ label: "VAT Registration", value: company.vat_number }] : []),
   ];
 
@@ -580,9 +582,6 @@ function InvoicePreview({
               <tr key={i} style={{ borderBottom: `1px solid ${LGRAY}` }}>
                 <td style={{ padding: "12px 0", fontSize: 12, color: isDiscount ? RED : DARK, verticalAlign: "top", fontStyle: isDiscount ? "italic" : "normal" }}>
                   <div>{item.description || <span style={{ color: LGRAY }}>—</span>}</div>
-                  {project && i === 0 && (
-                    <div style={{ fontSize: 10, color: GRAY, marginTop: 2 }}>{project}</div>
-                  )}
                 </td>
                 <td style={{ padding: "12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
                   {isDiscount ? "—" : (Number.isInteger(item.quantity) ? item.quantity : item.quantity.toFixed(2))}
