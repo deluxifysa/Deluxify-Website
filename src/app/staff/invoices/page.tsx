@@ -193,13 +193,18 @@ async function downloadInvoicePDF(
   autoTable(doc, {
     startY: y,
     head: [["Description", "Qty", "Unit Price", "Tax", "Amount"]],
-    body: lineItems.map(it => [
-      it.description || "—",
-      Number.isInteger(it.quantity) ? String(it.quantity) : it.quantity.toFixed(2),
-      formatCurrency(Math.round(it.unit_price * 100)),
-      `${invoice.tax_rate}%`,
-      formatCurrency(Math.round(it.quantity * it.unit_price * 100)),
-    ]),
+    body: lineItems.map(it => {
+      const isDiscount = it.description === "(Discount)" && it.unit_price < 0;
+      return [
+        it.description || "—",
+        isDiscount ? "—" : (Number.isInteger(it.quantity) ? String(it.quantity) : it.quantity.toFixed(2)),
+        isDiscount ? "—" : formatCurrency(Math.round(it.unit_price * 100)),
+        isDiscount ? "—" : `${invoice.tax_rate}%`,
+        isDiscount
+          ? `-${formatCurrency(Math.round(Math.abs(it.quantity * it.unit_price) * 100))}`
+          : formatCurrency(Math.round(it.quantity * it.unit_price * 100)),
+      ];
+    }),
     theme: "plain",
     headStyles: {
       textColor: GRAY, fontStyle: "normal", fontSize: 8,
@@ -217,6 +222,14 @@ async function downloadInvoicePDF(
       4: { cellWidth: 30, halign: "right" },
     },
     margin: { left: ML, right: W - MR },
+    didParseCell: (data: any) => {
+      if (data.section !== "body") return;
+      const row = data.row.raw as string[];
+      if (row[0] === "(Discount)") {
+        data.cell.styles.textColor = [220, 38, 38];
+        data.cell.styles.fontStyle = "italic";
+      }
+    },
     didDrawCell: (data: any) => {
       if (data.column.index !== data.table.columns.length - 1) return;
       doc.setDrawColor(...LGRAY); doc.setLineWidth(0.25);
@@ -560,28 +573,34 @@ function InvoicePreview({
           </tr>
         </thead>
         <tbody>
-          {items.map((item, i) => (
-            <tr key={i} style={{ borderBottom: `1px solid ${LGRAY}` }}>
-              <td style={{ padding: "12px 0", fontSize: 12, color: DARK, verticalAlign: "top" }}>
-                <div>{item.description || <span style={{ color: LGRAY }}>—</span>}</div>
-                {project && i === 0 && (
-                  <div style={{ fontSize: 10, color: GRAY, marginTop: 2 }}>{project}</div>
-                )}
-              </td>
-              <td style={{ padding: "12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
-                {Number.isInteger(item.quantity) ? item.quantity : item.quantity.toFixed(2)}
-              </td>
-              <td style={{ padding: "12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
-                {item.unit_price > 0 ? formatCurrency(Math.round(item.unit_price * 100)) : "—"}
-              </td>
-              <td style={{ padding: "12px 8px", fontSize: 12, color: GRAY, textAlign: "right", verticalAlign: "top" }}>
-                {taxRate}%
-              </td>
-              <td style={{ padding: "12px 0 12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
-                {item.unit_price > 0 ? formatCurrency(Math.round(item.quantity * item.unit_price * 100)) : "—"}
-              </td>
-            </tr>
-          ))}
+          {items.map((item, i) => {
+            const isDiscount = item.description === "(Discount)" && item.unit_price < 0;
+            const RED = "#dc2626";
+            return (
+              <tr key={i} style={{ borderBottom: `1px solid ${LGRAY}` }}>
+                <td style={{ padding: "12px 0", fontSize: 12, color: isDiscount ? RED : DARK, verticalAlign: "top", fontStyle: isDiscount ? "italic" : "normal" }}>
+                  <div>{item.description || <span style={{ color: LGRAY }}>—</span>}</div>
+                  {project && i === 0 && (
+                    <div style={{ fontSize: 10, color: GRAY, marginTop: 2 }}>{project}</div>
+                  )}
+                </td>
+                <td style={{ padding: "12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
+                  {isDiscount ? "—" : (Number.isInteger(item.quantity) ? item.quantity : item.quantity.toFixed(2))}
+                </td>
+                <td style={{ padding: "12px 8px", fontSize: 12, color: DARK, textAlign: "right", verticalAlign: "top" }}>
+                  {isDiscount ? "—" : (item.unit_price > 0 ? formatCurrency(Math.round(item.unit_price * 100)) : "—")}
+                </td>
+                <td style={{ padding: "12px 8px", fontSize: 12, color: GRAY, textAlign: "right", verticalAlign: "top" }}>
+                  {isDiscount ? "—" : `${taxRate}%`}
+                </td>
+                <td style={{ padding: "12px 0 12px 8px", fontSize: 12, color: isDiscount ? RED : DARK, textAlign: "right", verticalAlign: "top", fontWeight: isDiscount ? 600 : "normal" }}>
+                  {isDiscount
+                    ? `−${formatCurrency(Math.round(Math.abs(item.quantity * item.unit_price) * 100))}`
+                    : (item.unit_price > 0 ? formatCurrency(Math.round(item.quantity * item.unit_price * 100)) : "—")}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -656,6 +675,7 @@ export default function InvoicesPage() {
   const [items,          setItems]          = useState<LineItem[]>([
     { description:"", quantity:1, unit_price:0, total:0, service_id:null },
   ]);
+  const [fDiscount,      setFDiscount]      = useState(0);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => { loadAll(); }, []);
@@ -697,6 +717,7 @@ export default function InvoicesPage() {
     setFClientId(""); setFClientName(""); setFClientEmail(""); setFClientPhone(""); setFClientAddress("");
     setFProject(""); setFDue(""); setFNotes("");
     setFTax(company?.tax_rate ?? 15);
+    setFDiscount(0);
     setItems([{ description:"", quantity:1, unit_price:0, total:0, service_id:null }]);
     setOpenSections(new Set(["client","details"]));
     setPreviewTab("preview");
@@ -727,9 +748,12 @@ export default function InvoicesPage() {
     setPreviewTab("preview");
     const { data } = await supabase
       .from("invoice_items").select("*").eq("invoice_id", inv.id).order("sort_order");
+    const discountRow = (data ?? []).find(it => it.description === "(Discount)" && it.unit_price < 0);
+    setFDiscount(discountRow ? Math.abs(discountRow.unit_price) / 100 : 0);
+    const regularData = (data ?? []).filter(it => !(it.description === "(Discount)" && it.unit_price < 0));
     setItems(
-      data && data.length > 0
-        ? data.map(it => ({ description:it.description, quantity:it.quantity, unit_price:it.unit_price/100, total:it.total/100, service_id:null }))
+      regularData.length > 0
+        ? regularData.map(it => ({ description:it.description, quantity:it.quantity, unit_price:it.unit_price/100, total:it.total/100, service_id:null }))
         : [{ description:"", quantity:1, unit_price:0, total:0, service_id:null }]
     );
     setLoadingItems(false);
@@ -744,7 +768,10 @@ export default function InvoicesPage() {
     const resolvedEmail = client?.email      ?? fClientEmail ?? "";
     const resolvedPhone   = (client?.phone   ?? fClientPhone)   || null;
     const resolvedAddress = (client?.address ?? fClientAddress) || null;
-    const lineItems = items.map(it => ({
+    const effectiveSaveItems: LineItem[] = fDiscount > 0
+      ? [...items, { description: "(Discount)", quantity: 1, unit_price: -fDiscount, total: -fDiscount, service_id: null }]
+      : items;
+    const lineItems = effectiveSaveItems.map(it => ({
       description: it.description,
       quantity:    it.quantity,
       unit_price:  Math.round(it.unit_price * 100),
@@ -950,6 +977,9 @@ export default function InvoicesPage() {
   // ── Derived ───────────────────────────────────────────────────────────────────
   const isLight  = mounted && theme === "light";
   const t        = getThemeTokens(isLight);
+  const effectiveItems: LineItem[] = fDiscount > 0
+    ? [...items, { description: "(Discount)", quantity: 1, unit_price: -fDiscount, total: -fDiscount, service_id: null }]
+    : items;
   const filtered = statusF === "all" ? invoices : invoices.filter(i => i.status === statusF);
 
   const stats = {
@@ -1217,6 +1247,33 @@ export default function InvoicesPage() {
                     </button>
                   </div>
 
+                  {/* Discount */}
+                  <div>
+                    <label className={labelCls}>Discount (R)</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number" min={0} step={0.01}
+                        value={fDiscount === 0 ? "" : fDiscount}
+                        placeholder="0.00 — leave blank for no discount"
+                        onChange={e => setFDiscount(parseFloat(e.target.value) || 0)}
+                        className={`flex-1 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${t.input}`}
+                      />
+                      {fDiscount > 0 && (
+                        <button type="button" onClick={() => setFDiscount(0)}
+                          className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
+                            isLight ? "text-black/25 hover:text-red-500 hover:bg-red-50" : "text-white/25 hover:text-red-400 hover:bg-red-400/5"
+                          }`}>
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    {fDiscount > 0 && (
+                      <p className="mt-1.5 text-xs text-red-500 font-medium">
+                        −{formatCurrency(Math.round(fDiscount * 100))} will appear as (Discount) on the invoice
+                      </p>
+                    )}
+                  </div>
+
                   <div>
                     <label className={labelCls}>Tax / VAT Rate (%)</label>
                     <input type="number" min={0} max={100} step={0.1} value={fTax}
@@ -1225,7 +1282,7 @@ export default function InvoicesPage() {
 
                   {/* Totals mini summary */}
                   {(() => {
-                    const li = items.map(it => ({ quantity:it.quantity, unit_price:Math.round(it.unit_price*100) }));
+                    const li = effectiveItems.map(it => ({ quantity:it.quantity, unit_price:Math.round(it.unit_price*100) }));
                     const { subtotal, tax_amount, total } = computeInvoiceTotals(li, fTax);
                     return (
                       <div className={`rounded-xl p-3 space-y-1 ${isLight?"bg-black/[0.03] border border-black/[0.06]":"bg-white/[0.03] border border-white/[0.06]"}`}>
@@ -1403,7 +1460,7 @@ export default function InvoicesPage() {
                   clientEmail={previewEmail}
                   clientPhone={selectedClient?.phone ?? fClientPhone}
                   clientAddress={fClientAddress}
-                  items={items}
+                  items={effectiveItems}
                   taxRate={fTax}
                   notes={fNotes}
                   company={company}
