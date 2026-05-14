@@ -1036,13 +1036,28 @@ export default function InvoicesPage() {
             </div>
 
             {/* Info banner */}
-            <div className={`mx-4 my-3 px-3 py-2.5 rounded-xl flex items-start gap-2.5 ${
+            <div className={`mx-4 mt-3 px-3 py-2.5 rounded-xl flex items-start gap-2.5 ${
               isLight ? "bg-[#2F8F89]/[0.06] border border-[#2F8F89]/20" : "bg-[#2F8F89]/[0.08] border border-[#2F8F89]/20"
             }`}>
               <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-[#2F8F89]" />
               <p className={`text-xs leading-relaxed ${isLight ? "text-[#2F8F89]" : "text-[#3FE0D0]/80"}`}>
                 You can save an unfinished invoice as draft and complete it later.
               </p>
+            </div>
+
+            {/* Project Name — top-level, always visible */}
+            <div className={`mx-4 mt-3 mb-1 px-3 py-3 rounded-xl border ${
+              isLight ? "bg-black/[0.025] border-black/[0.07]" : "bg-white/[0.03] border-white/[0.07]"
+            }`}>
+              <label className={`block text-xs font-semibold uppercase tracking-wider mb-1.5 ${t.label}`}>
+                Project Name
+              </label>
+              <input
+                value={fProject}
+                onChange={e => setFProject(e.target.value)}
+                placeholder="e.g. Website Redesign"
+                className={`w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 transition-all ${t.input}`}
+              />
             </div>
 
             {loadingItems ? (
@@ -1161,11 +1176,6 @@ export default function InvoicesPage() {
                   onToggle={() => toggleSection("details")}
                   isLight={isLight} t={t}
                 >
-                  <div>
-                    <label className={labelCls}>Project Name</label>
-                    <input value={fProject} onChange={e => setFProject(e.target.value)}
-                      placeholder="e.g. Website Redesign" className={inputCls} />
-                  </div>
                   <div>
                     <label className={labelCls}>Due Date</label>
                     <input type="date" value={fDue} onChange={e => setFDue(e.target.value)} className={inputCls} />
