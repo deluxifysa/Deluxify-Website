@@ -48,7 +48,7 @@ type CompanySettings = {
 };
 
 // ─── Load logo as base64 ──────────────────────────────────────────────────────
-function loadImageDataUrl(src: string): Promise<string> {
+function loadImageDataUrl(src: string): Promise<{ dataUrl: string; w: number; h: number }> {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -57,11 +57,11 @@ function loadImageDataUrl(src: string): Promise<string> {
       canvas.width  = img.naturalWidth;
       canvas.height = img.naturalHeight;
       const ctx = canvas.getContext("2d");
-      if (!ctx) { resolve(""); return; }
+      if (!ctx) { resolve({ dataUrl: "", w: 0, h: 0 }); return; }
       ctx.drawImage(img, 0, 0);
-      resolve(canvas.toDataURL("image/png"));
+      resolve({ dataUrl: canvas.toDataURL("image/png"), w: img.naturalWidth, h: img.naturalHeight });
     };
-    img.onerror = () => resolve("");
+    img.onerror = () => resolve({ dataUrl: "", w: 0, h: 0 });
     img.src = src;
   });
 }
@@ -88,13 +88,15 @@ async function downloadReceiptPDF(
   const LGRAY: RGB = [212, 212, 212];
   const WHITE: RGB = [255, 255, 255];
 
-  const logoData = await loadImageDataUrl("/logo.png");
+  const logo = await loadImageDataUrl("/logo.png");
 
   let y = 18;
 
-  // Logo — top right
-  if (logoData) {
-    doc.addImage(logoData, "PNG", MR - 32, y - 7, 32, 10, undefined, "FAST");
+  // Logo — top right, aspect-ratio preserved at 10 mm tall
+  if (logo.dataUrl) {
+    const logoH = 10;
+    const logoW = logo.h > 0 ? Math.min((logo.w / logo.h) * logoH, 48) : 32;
+    doc.addImage(logo.dataUrl, "PNG", MR - logoW, y - 7, logoW, logoH, undefined, "FAST");
   }
 
   // "Receipt" heading — top left
@@ -310,13 +312,15 @@ async function downloadInvoicePDF(
   const LGRAY: RGB = [212, 212, 212];
   const WHITE: RGB = [255, 255, 255];
 
-  const logoData = await loadImageDataUrl("/logo.png");
+  const logo = await loadImageDataUrl("/logo.png");
 
   let y = 18;
 
-  // Logo — top right
-  if (logoData) {
-    doc.addImage(logoData, "PNG", MR - 32, y - 7, 32, 10, undefined, "FAST");
+  // Logo — top right, aspect-ratio preserved at 10 mm tall
+  if (logo.dataUrl) {
+    const logoH = 10;
+    const logoW = logo.h > 0 ? Math.min((logo.w / logo.h) * logoH, 48) : 32;
+    doc.addImage(logo.dataUrl, "PNG", MR - logoW, y - 7, logoW, logoH, undefined, "FAST");
   }
 
   // "Invoice" heading — top left
