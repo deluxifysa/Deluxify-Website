@@ -66,7 +66,225 @@ function loadImageDataUrl(src: string): Promise<string> {
   });
 }
 
-// ─── PDF generator ────────────────────────────────────────────────────────────
+// ─── PDF generator — Receipt ──────────────────────────────────────────────────
+async function downloadReceiptPDF(
+  invoice: Invoice,
+  lineItems: LineItem[],
+  company: CompanySettings
+) {
+  const { default: jsPDF }     = await import("jspdf");
+  const { default: autoTable } = await import("jspdf-autotable");
+
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const W   = doc.internal.pageSize.getWidth();
+  const H   = doc.internal.pageSize.getHeight();
+  const ML  = 16;
+  const MR  = W - 16;
+  const CW  = MR - ML;
+
+  type RGB = [number,number,number];
+  const DARK:  RGB = [30,  30,  30];
+  const GRAY:  RGB = [107, 107, 107];
+  const LGRAY: RGB = [212, 212, 212];
+  const WHITE: RGB = [255, 255, 255];
+
+  const logoData = await loadImageDataUrl("/logo.png");
+
+  let y = 18;
+
+  // Logo — top right
+  if (logoData) {
+    doc.addImage(logoData, "PNG", MR - 32, y - 7, 32, 10, undefined, "FAST");
+  }
+
+  // "Receipt" heading — top left
+  doc.setFont("helvetica", "bold"); doc.setFontSize(26); doc.setTextColor(...DARK);
+  doc.text("Receipt", ML, y);
+  y += 10;
+
+  // Thin rule
+  doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, y, MR, y); y += 7;
+
+  // Metadata key-value rows
+  const meta: [string, string][] = [
+    ["Invoice number", invoice.invoice_no],
+    ["Date of issue",  formatDate(invoice.issue_date)],
+    ["Payment date",   (invoice as any).paid_date ? formatDate((invoice as any).paid_date) : "—"],
+    ...((invoice as any).project_name ? [["Project", (invoice as any).project_name] as [string, string]] : []),
+    ...(company.vat_number ? [["VAT Registration", company.vat_number] as [string, string]] : []),
+  ];
+  const LBL_W = 44;
+  meta.forEach(([label, val]) => {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text(label, ML, y);
+    doc.setFont("helvetica", "bold"); doc.setTextColor(...DARK);
+    doc.text(val, ML + LBL_W, y);
+    y += 5;
+  });
+  y += 6;
+
+  // From / Bill To — two columns
+  const COL2 = ML + CW / 2 + 4;
+
+  // Company name
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...DARK);
+  doc.text(company.company_name ?? "", ML, y);
+  // "Bill to" label
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  doc.text("Bill to", COL2, y);
+  y += 5.5;
+
+  // From details
+  let fromY = y;
+  const fromLines = [
+    ...(company.company_address?.split(/[\n,]/).map(s => s.trim()).filter(Boolean) ?? []),
+    company.company_email,
+    company.company_phone,
+    company.company_website,
+  ].filter(Boolean) as string[];
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  fromLines.forEach(l => { doc.text(l, ML, fromY); fromY += 4.5; });
+
+  // Bill To details
+  let toY = y;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...DARK);
+  doc.text(invoice.client_name || "—", COL2, toY); toY += 5.5;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  const toLines = [
+    ...((invoice as any).client_address?.split(/\n/).map((s: string) => s.trim()).filter(Boolean) ?? []),
+    (invoice as any).client_phone as string | undefined,
+    invoice.client_email,
+  ].filter(Boolean) as string[];
+  toLines.forEach(l => { doc.text(l, COL2, toY); toY += 4.5; });
+
+  y = Math.max(fromY, toY) + 10;
+
+  // Large amount-paid heading
+  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(...DARK);
+  doc.text(
+    `${formatCurrency(invoice.total)} ${invoice.currency} paid on ${invoice.paid_date ? formatDate(invoice.paid_date) : "—"}`,
+    ML, y
+  );
+  y += 10;
+
+  // Thin rule
+  doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, y, MR, y); y += 7;
+
+  // Payment confirmation message
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  const confirmMsg = "This receipt confirms payment has been received. Thank you for your business.";
+  const confirmLines = doc.splitTextToSize(confirmMsg, CW);
+  doc.text(confirmLines, ML, y); y += confirmLines.length * 4.5 + 6;
+
+  // Notes
+  if (invoice.notes) {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    const nl = doc.splitTextToSize(invoice.notes, CW);
+    doc.text(nl, ML, y); y += nl.length * 4.5 + 6;
+  }
+
+  // Banking — plain text list
+  if (company.bank_name || company.bank_account) {
+    doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text("Payment Details", ML, y); y += 5;
+    doc.setFont("helvetica", "normal");
+    if (company.bank_name)    { doc.text(`Bank: ${company.bank_name}`,          ML, y); y += 4.5; }
+    if (company.bank_account) { doc.text(`Account No: ${company.bank_account}`, ML, y); y += 4.5; }
+    if (company.bank_branch)  { doc.text(`Branch Code: ${company.bank_branch}`, ML, y); y += 4.5; }
+    doc.text(`Reference: ${invoice.invoice_no}`, ML, y); y += 8;
+  }
+
+  // Line items table — plain, horizontal rules only
+  autoTable(doc, {
+    startY: y,
+    head: [["Description", "Qty", "Unit Price", "Tax", "Amount"]],
+    body: lineItems.map(it => {
+      const isDiscount = it.description === "(Discount)" && it.unit_price < 0;
+      return [
+        it.description || "—",
+        isDiscount ? "—" : (Number.isInteger(it.quantity) ? String(it.quantity) : it.quantity.toFixed(2)),
+        isDiscount ? "—" : formatCurrency(Math.round(it.unit_price * 100)),
+        isDiscount ? "—" : `${invoice.tax_rate}%`,
+        isDiscount
+          ? `-${formatCurrency(Math.round(Math.abs(it.quantity * it.unit_price) * 100))}`
+          : formatCurrency(Math.round(it.quantity * it.unit_price * 100)),
+      ];
+    }),
+    theme: "plain",
+    headStyles: {
+      textColor: GRAY, fontStyle: "normal", fontSize: 8,
+      cellPadding: { top: 3, bottom: 6, left: 0, right: 0 },
+    },
+    bodyStyles: {
+      fontSize: 9, textColor: DARK,
+      cellPadding: { top: 5, bottom: 5, left: 0, right: 0 },
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" },
+      1: { cellWidth: 14, halign: "right" },
+      2: { cellWidth: 30, halign: "right" },
+      3: { cellWidth: 14, halign: "right", textColor: GRAY },
+      4: { cellWidth: 30, halign: "right" },
+    },
+    margin: { left: ML, right: W - MR },
+    didParseCell: (data: any) => {
+      if (data.section !== "body") return;
+      const row = data.row.raw as string[];
+      if (row[0] === "(Discount)") {
+        data.cell.styles.textColor = [220, 38, 38];
+        data.cell.styles.fontStyle = "italic";
+      }
+    },
+    didDrawCell: (data: any) => {
+      if (data.column.index !== data.table.columns.length - 1) return;
+      doc.setDrawColor(...LGRAY); doc.setLineWidth(0.25);
+      doc.line(ML, data.cell.y + data.cell.height, MR, data.cell.y + data.cell.height);
+    },
+  });
+
+  y = (doc as any).lastAutoTable.finalY + 6;
+
+  // Thin rule above totals
+  doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, y, MR, y); y += 6;
+
+  // Totals — right-aligned with thin dividers
+  const totW  = 120;
+  const totLX = MR - totW;
+  const totRows: [string, string][] = [
+    ["Subtotal",                        formatCurrency(invoice.subtotal)],
+    [`VAT included (${invoice.tax_rate}%)`, formatCurrency(invoice.tax_amount)],
+  ];
+  totRows.forEach(([label, val]) => {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+    doc.text(label, totLX, y);
+    doc.setTextColor(...DARK); doc.text(val, MR, y, { align: "right" });
+    y += 4;
+    doc.setDrawColor(...LGRAY); doc.setLineWidth(0.2);
+    doc.line(totLX, y, MR, y); y += 4;
+  });
+
+  y += 2;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...DARK);
+  doc.text("Amount paid", totLX, y);
+  doc.text(`${formatCurrency(invoice.total)} ${invoice.currency}`, MR, y, { align: "right" });
+
+  // Footer — thin rule + page number
+  doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, H - 14, MR, H - 14);
+  const totalPages = (doc as any).internal.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(...LGRAY);
+    doc.text(`Page ${p} of ${totalPages}`, MR, H - 8, { align: "right" });
+  }
+
+  doc.save(`${invoice.invoice_no}-receipt.pdf`);
+}
+
+// ─── PDF generator — Invoice ──────────────────────────────────────────────────
 async function downloadInvoicePDF(
   invoice: Invoice,
   lineItems: LineItem[],
@@ -648,8 +866,9 @@ export default function InvoicesPage() {
   const [updating,     setUpdating]     = useState<string | null>(null);
   const [downloading,   setDownloading]   = useState<string | null>(null);
   const [loadingItems,  setLoadingItems]  = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [previewTab,    setPreviewTab]    = useState<"preview"|"pdf"|"email"|"payment">("preview");
+  const [deleteConfirm,      setDeleteConfirm]      = useState<string | null>(null);
+  const [previewTab,         setPreviewTab]         = useState<"preview"|"pdf"|"email"|"payment">("preview");
+  const [downloadingReceipt,  setDownloadingReceipt] = useState<string | null>(null);
 
   // Hidden print state — used to render an off-screen preview then capture it
   const [printInv,   setPrintInv]   = useState<Invoice | null>(null);
@@ -913,6 +1132,23 @@ export default function InvoicesPage() {
     setPrintItems(li);
     setPrintInv(inv);
     // capture happens in the useEffect below once the hidden div renders
+  }
+
+  async function handleDownloadReceipt(inv: Invoice) {
+    setDownloadingReceipt(inv.id);
+    const { data } = await supabase
+      .from("invoice_items").select("*").eq("invoice_id", inv.id).order("sort_order");
+    const li: LineItem[] = (data ?? []).map(it => ({
+      description: it.description, quantity: it.quantity,
+      unit_price: it.unit_price / 100, total: it.total / 100, service_id: null,
+    }));
+    try {
+      await downloadReceiptPDF(inv, li, company!);
+    } catch (err) {
+      console.error("Receipt PDF generation error:", err);
+    } finally {
+      setDownloadingReceipt(null);
+    }
   }
 
   // Once printInv is set and the hidden div has rendered, capture → PDF → cleanup
@@ -1612,10 +1848,16 @@ export default function InvoicesPage() {
                             </select>
                             <ChevronDown className={`absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none ${t.muted}`} />
                           </div>
-                          <button onClick={() => handleDownload(inv)} disabled={isDL} title="Download PDF"
+                          <button onClick={() => handleDownload(inv)} disabled={isDL} title="Download Invoice PDF"
                             className={`p-1.5 rounded-lg transition-all disabled:opacity-40 ${isLight?"text-black/30 hover:text-[#2F8F89] hover:bg-[#2F8F89]/10":"text-white/25 hover:text-[#3FE0D0] hover:bg-[#2F8F89]/10"}`}>
                             {isDL ? <div className="w-3.5 h-3.5 border border-[#2F8F89] border-t-transparent rounded-full animate-spin" /> : <Download className="w-3.5 h-3.5" />}
                           </button>
+                          {inv.status === "paid" && (
+                            <button onClick={() => handleDownloadReceipt(inv)} disabled={downloadingReceipt === inv.id} title="Download Receipt PDF"
+                              className={`p-1.5 rounded-lg transition-all disabled:opacity-40 ${isLight?"text-black/30 hover:text-green-600 hover:bg-green-50":"text-white/25 hover:text-green-400 hover:bg-green-400/10"}`}>
+                              {downloadingReceipt === inv.id ? <div className="w-3.5 h-3.5 border border-green-600 border-t-transparent rounded-full animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                            </button>
+                          )}
                           <button onClick={() => openEdit(inv)} title="Edit"
                             className={`p-1.5 rounded-lg transition-all ${isLight?"text-black/25 hover:text-black hover:bg-black/[0.06]":"text-white/25 hover:text-white hover:bg-white/[0.08]"}`}>
                             <Edit2 className="w-3.5 h-3.5" />
