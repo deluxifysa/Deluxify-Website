@@ -136,6 +136,7 @@ async function downloadReceiptPDF(
   y += 5.5;
 
   // From details
+  const colW = CW / 2 - 4;
   let fromY = y;
   const fromLines = [
     ...(company.company_address?.split(/[\n,]/).map(s => s.trim()).filter(Boolean) ?? []),
@@ -144,19 +145,28 @@ async function downloadReceiptPDF(
     company.company_website,
   ].filter(Boolean) as string[];
   doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
-  fromLines.forEach(l => { doc.text(l, ML, fromY); fromY += 4.5; });
+  fromLines.forEach(l => {
+    const wrapped = doc.splitTextToSize(l, colW);
+    doc.text(wrapped, ML, fromY);
+    fromY += wrapped.length * 4.5;
+  });
 
   // Bill To details
   let toY = y;
   doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...DARK);
-  doc.text(invoice.client_name || "—", COL2, toY); toY += 5.5;
+  const clientNameWrapped = doc.splitTextToSize(invoice.client_name || "—", colW);
+  doc.text(clientNameWrapped, COL2, toY); toY += clientNameWrapped.length * 5.5;
   doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
   const toLines = [
     ...((invoice as any).client_address?.split(/\n/).map((s: string) => s.trim()).filter(Boolean) ?? []),
     (invoice as any).client_phone as string | undefined,
     invoice.client_email,
   ].filter(Boolean) as string[];
-  toLines.forEach(l => { doc.text(l, COL2, toY); toY += 4.5; });
+  toLines.forEach(l => {
+    const wrapped = doc.splitTextToSize(l, colW);
+    doc.text(wrapped, COL2, toY);
+    toY += wrapped.length * 4.5;
+  });
 
   y = Math.max(fromY, toY) + 10;
 
