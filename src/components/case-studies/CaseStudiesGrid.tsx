@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -12,7 +13,7 @@ const caseStudies = [
       "Deluxify built us a job-tracking system that replaced our WhatsApp chaos. It took two weeks and saved us hours every day. Worth every cent.",
     author: "Lebo Motaung",
     role: "Owner",
-    photo: "",
+    photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=70",
     stats: [
       { value: "100%", label: "Jobs Tracked Digitally", sub: "Previously managed via WhatsApp" },
       { value: "~3 hrs", label: "Admin Saved Daily", sub: "Built and live in 18 days" },
@@ -25,7 +26,7 @@ const caseStudies = [
       "I was sceptical at first — we're a small pharmacy, not a tech company. But the inventory automation they set up genuinely changed how we work. Highly recommend.",
     author: "Priya Naidoo",
     role: "Manager",
-    photo: "",
+    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=70",
     stats: [
       { value: "−71%", label: "Stock-out Incidents", sub: "Setup completed in 11 days" },
       { value: "Zero", label: "New Hardware Needed", sub: "Integrated with existing POS" },
@@ -38,7 +39,7 @@ const caseStudies = [
       "They built a driver scheduling tool in under a month. It's not perfect yet but the team is responsive and keeps improving it. Good value for money.",
     author: "Gerhard du Plessis",
     role: "Director",
-    photo: "",
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=70",
     stats: [
       { value: "−65%", label: "Scheduling Time", sub: "12 drivers across multiple routes" },
       { value: "−40%", label: "Driver No-shows", sub: "Via SMS confirmations" },
@@ -66,10 +67,12 @@ export function CaseStudiesGrid() {
               {/* Left — image + quote + author (spans 2 cols) */}
               <div className={`flex flex-col gap-8 sm:flex-row lg:col-span-2 lg:border-r lg:pr-12 xl:pr-20 ${isLight ? "border-black/10" : "border-white/8"}`}>
                 {/* Portrait */}
-                <img
+                <Image
                   src={cs.photo}
                   alt={cs.author}
-                  className="aspect-[4/5] w-full max-w-[160px] sm:max-w-[200px] rounded-2xl object-cover shrink-0 mx-auto sm:mx-0"
+                  width={200}
+                  height={250}
+                  className="w-full max-w-[160px] sm:max-w-[200px] rounded-2xl object-cover shrink-0 mx-auto sm:mx-0"
                 />
 
                 {/* Quote + author */}
