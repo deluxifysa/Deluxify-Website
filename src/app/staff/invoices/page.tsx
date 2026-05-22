@@ -12,7 +12,7 @@ import {
   type Invoice, type InvoiceStatus, type Client, type Service,
 } from "@/types/crm";
 import {
-  Plus, X, FileText, Trash2, Edit2, Download,
+  Plus, X, FileText, Trash2, Edit2, Download, Receipt,
   ChevronDown, ChevronLeft,
   CheckCircle2, Clock, AlertCircle,
   User, CreditCard, StickyNote, Building2,
@@ -171,12 +171,6 @@ async function downloadReceiptPDF(
   // Thin rule
   doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
   doc.line(ML, y, MR, y); y += 7;
-
-  // Payment confirmation message
-  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
-  const confirmMsg = "This receipt confirms payment has been received. Thank you for your business.";
-  const confirmLines = doc.splitTextToSize(confirmMsg, CW);
-  doc.text(confirmLines, ML, y); y += confirmLines.length * 4.5 + 6;
 
   // Notes
   if (invoice.notes) {
@@ -1855,7 +1849,7 @@ export default function InvoicesPage() {
                           {inv.status === "paid" && (
                             <button onClick={() => handleDownloadReceipt(inv)} disabled={downloadingReceipt === inv.id} title="Download Receipt PDF"
                               className={`p-1.5 rounded-lg transition-all disabled:opacity-40 ${isLight?"text-black/30 hover:text-green-600 hover:bg-green-50":"text-white/25 hover:text-green-400 hover:bg-green-400/10"}`}>
-                              {downloadingReceipt === inv.id ? <div className="w-3.5 h-3.5 border border-green-600 border-t-transparent rounded-full animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                              {downloadingReceipt === inv.id ? <div className="w-3.5 h-3.5 border border-green-600 border-t-transparent rounded-full animate-spin" /> : <Receipt className="w-3.5 h-3.5" />}
                             </button>
                           )}
                           <button onClick={() => openEdit(inv)} title="Edit"
