@@ -87,10 +87,12 @@ export function AboutSection() {
         <AnimatedSection>
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Main image — 2 cols */}
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&auto=format&fit=crop&q=70"
               alt="Deluxify team at work"
-              className="size-full max-h-[580px] rounded-2xl object-cover lg:col-span-2"
+              width={1200}
+              height={780}
+              className="w-full max-h-[580px] rounded-2xl object-cover lg:col-span-2"
             />
 
             {/* Right column */}
@@ -124,10 +126,12 @@ export function AboutSection() {
               </div>
 
               {/* Secondary image */}
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&auto=format&fit=crop&q=70"
                 alt="Deluxify team discussion"
-                className="grow basis-0 rounded-2xl object-cover min-h-40 md:w-1/2 lg:w-auto"
+                width={600}
+                height={480}
+                className="w-full grow basis-0 rounded-2xl object-cover min-h-40 md:w-1/2 lg:w-auto"
               />
             </div>
           </div>
