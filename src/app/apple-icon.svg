@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <rect width="180" height="180" rx="40" fill="#2F8F89"/>
+  <text
+    x="90"
+    y="132"
+    text-anchor="middle"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="128"
+    font-weight="700"
+    fill="#ffffff"
+    letter-spacing="-4"
+  >D</text>
+</svg>
