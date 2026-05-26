@@ -229,6 +229,10 @@ async function downloadReceiptPDF(
     },
     margin: { left: ML, right: W - MR },
     didParseCell: (data: any) => {
+      // Numeric columns (Qty, Unit Price, Tax, Amount) must be right-aligned in the header too
+      if (data.section === "head" && data.column.index > 0) {
+        data.cell.styles.halign = "right";
+      }
       if (data.section !== "body") return;
       const row = data.row.raw as string[];
       if (row[0] === "(Discount)") {
@@ -448,6 +452,9 @@ async function downloadInvoicePDF(
     },
     margin: { left: ML, right: W - MR },
     didParseCell: (data: any) => {
+      if (data.section === "head" && data.column.index > 0) {
+        data.cell.styles.halign = "right";
+      }
       if (data.section !== "body") return;
       const row = data.row.raw as string[];
       if (row[0] === "(Discount)") {
