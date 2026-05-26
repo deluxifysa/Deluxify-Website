@@ -79,7 +79,9 @@ export default function ProfilePage() {
 
   // Company
   const [company,      setCompany]      = useState<CompanySettings>(COMPANY_DEFAULTS);
+  const [companyId,    setCompanyId]    = useState<string | null>(null);
   const [companyState, setCompanyState] = useState<SaveState>("idle");
+  const [companyErr,   setCompanyErr]   = useState("");
 
   // Logs
   const [logs,        setLogs]        = useState<AuditLog[]>([]);
@@ -114,7 +116,7 @@ export default function ProfilePage() {
       }
     });
     supabase.from("company_settings").select("*").limit(1).maybeSingle().then(({ data }) => {
-      if (data) { const { id, ...rest } = data; setCompany({ ...COMPANY_DEFAULTS, ...rest }); }
+      if (data) { const { id, ...rest } = data; setCompanyId(id); setCompany({ ...COMPANY_DEFAULTS, ...rest }); }
     });
   }, []);
 
@@ -162,9 +164,40 @@ export default function ProfilePage() {
   async function handleCompanySave(e: React.FormEvent) {
     e.preventDefault();
     setCompanyState("saving");
-    const { error } = await supabase.from("company_settings").upsert({ ...company }, { onConflict: "id" });
-    if (error) await supabase.from("company_settings").insert(company);
-    setCompanyState("saved");
+    setCompanyErr("");
+
+    // Re-fetch the current row ID — never rely solely on stale state
+    const { data: currentRow } = await supabase
+      .from("company_settings")
+      .select("id")
+      .limit(1)
+      .maybeSingle();
+
+    const targetId = currentRow?.id ?? companyId;
+    let saveErr: string | null = null;
+
+    if (targetId) {
+      if (!companyId) setCompanyId(targetId);
+      const { data: updated, error } = await supabase
+        .from("company_settings")
+        .update({ ...company })
+        .eq("id", targetId)
+        .select("id");
+      if (error) saveErr = error.message;
+      else if (!updated || updated.length === 0)
+        saveErr = "Save blocked — check the Supabase RLS policy for company_settings (UPDATE for authenticated users).";
+    } else {
+      const { data: inserted, error } = await supabase
+        .from("company_settings")
+        .insert({ ...company })
+        .select("id")
+        .single();
+      if (error) saveErr = error.message;
+      else if (inserted?.id) setCompanyId(inserted.id);
+    }
+
+    if (saveErr) { setCompanyErr(saveErr); setCompanyState("error"); }
+    else setCompanyState("saved");
     setTimeout(() => setCompanyState("idle"), 3000);
   }
 
@@ -345,11 +378,18 @@ export default function ProfilePage() {
                 </div>
               </div>
               {isAdmin && (
-                <div className={`px-6 py-4 border-t flex items-center justify-between ${t.divider}`}>
-                  <SaveFeedback state={companyState} isLight={isLight} />
-                  <button type="submit" disabled={companyState === "saving"} className="btn-primary text-sm px-5 disabled:opacity-60 ml-auto">
-                    {companyState === "saving" ? "Saving…" : "Save Company"}
-                  </button>
+                <div className={`px-6 py-4 border-t space-y-2 ${t.divider}`}>
+                  {companyState === "error" && companyErr && (
+                    <p className={`flex items-start gap-1.5 text-xs px-3 py-2 rounded-xl border ${isLight ? "bg-red-50 border-red-200 text-red-700" : "bg-red-400/8 border-red-400/20 text-red-400"}`}>
+                      <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />{companyErr}
+                    </p>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <SaveFeedback state={companyState} isLight={isLight} />
+                    <button type="submit" disabled={companyState === "saving"} className="btn-primary text-sm px-5 disabled:opacity-60 ml-auto">
+                      {companyState === "saving" ? "Saving…" : "Save Company"}
+                    </button>
+                  </div>
                 </div>
               )}
             </form>
@@ -412,11 +452,18 @@ export default function ProfilePage() {
                 </div>
               </div>
               {isAdmin && (
-                <div className={`px-6 py-4 border-t flex items-center justify-between ${t.divider}`}>
-                  <SaveFeedback state={companyState} isLight={isLight} />
-                  <button type="submit" disabled={companyState === "saving"} className="btn-primary text-sm px-5 disabled:opacity-60 ml-auto">
-                    {companyState === "saving" ? "Saving…" : "Save Invoice Settings"}
-                  </button>
+                <div className={`px-6 py-4 border-t space-y-2 ${t.divider}`}>
+                  {companyState === "error" && companyErr && (
+                    <p className={`flex items-start gap-1.5 text-xs px-3 py-2 rounded-xl border ${isLight ? "bg-red-50 border-red-200 text-red-700" : "bg-red-400/8 border-red-400/20 text-red-400"}`}>
+                      <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />{companyErr}
+                    </p>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <SaveFeedback state={companyState} isLight={isLight} />
+                    <button type="submit" disabled={companyState === "saving"} className="btn-primary text-sm px-5 disabled:opacity-60 ml-auto">
+                      {companyState === "saving" ? "Saving…" : "Save Invoice Settings"}
+                    </button>
+                  </div>
                 </div>
               )}
             </form>
@@ -462,11 +509,18 @@ export default function ProfilePage() {
                 </div>
               </div>
               {isAdmin && (
-                <div className={`px-6 py-4 border-t flex items-center justify-between ${t.divider}`}>
-                  <SaveFeedback state={companyState} isLight={isLight} />
-                  <button type="submit" disabled={companyState === "saving"} className="btn-primary text-sm px-5 disabled:opacity-60 ml-auto">
-                    {companyState === "saving" ? "Saving…" : "Save Banking"}
-                  </button>
+                <div className={`px-6 py-4 border-t space-y-2 ${t.divider}`}>
+                  {companyState === "error" && companyErr && (
+                    <p className={`flex items-start gap-1.5 text-xs px-3 py-2 rounded-xl border ${isLight ? "bg-red-50 border-red-200 text-red-700" : "bg-red-400/8 border-red-400/20 text-red-400"}`}>
+                      <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />{companyErr}
+                    </p>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <SaveFeedback state={companyState} isLight={isLight} />
+                    <button type="submit" disabled={companyState === "saving"} className="btn-primary text-sm px-5 disabled:opacity-60 ml-auto">
+                      {companyState === "saving" ? "Saving…" : "Save Banking"}
+                    </button>
+                  </div>
                 </div>
               )}
             </form>
