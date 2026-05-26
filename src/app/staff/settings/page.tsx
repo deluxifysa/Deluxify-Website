@@ -107,12 +107,29 @@ export default function SettingsPage() {
       bank_branch:     form.bank_branch     || null,
     };
 
-    let error;
-    if (settingsId) {
-      ({ error } = await supabase
+    // Always re-fetch the current row ID so stale state can't cause a silent miss
+    const { data: currentRow } = await supabase
+      .from("company_settings")
+      .select("id")
+      .limit(1)
+      .maybeSingle();
+
+    const targetId = currentRow?.id ?? settingsId;
+
+    let error: { message: string } | null = null;
+
+    if (targetId) {
+      if (!settingsId) setSettingsId(targetId);
+      const { data: updated, error: updErr } = await supabase
         .from("company_settings")
         .update(payload)
-        .eq("id", settingsId));
+        .eq("id", targetId)
+        .select("id");
+      error = updErr;
+      // 0 rows returned means RLS blocked the write without raising an error
+      if (!error && (!updated || updated.length === 0)) {
+        error = { message: "Settings could not be saved — your account may not have write permission on this table. Check the Supabase RLS policy for company_settings." };
+      }
     } else {
       const { data: inserted, error: insError } = await supabase
         .from("company_settings")

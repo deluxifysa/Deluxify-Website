@@ -184,13 +184,6 @@ async function downloadReceiptPDF(
   doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
   doc.line(ML, y, MR, y); y += 7;
 
-  // Notes
-  if (invoice.notes) {
-    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
-    const nl = doc.splitTextToSize(invoice.notes, CW);
-    doc.text(nl, ML, y); y += nl.length * 4.5 + 6;
-  }
-
   // Banking — plain text list
   if (company.bank_name || company.bank_account) {
     doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.setTextColor(...GRAY);
@@ -276,6 +269,11 @@ async function downloadReceiptPDF(
   doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...DARK);
   doc.text("Amount paid", totLX, y);
   doc.text(`${formatCurrency(invoice.total)} ${invoice.currency}`, MR, y, { align: "right" });
+  y += 14;
+
+  // Payment confirmation
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...GRAY);
+  doc.text("This receipt confirms that full payment has been received. Thank you for your business.", ML, y);
 
   // Footer — thin rule + page number
   doc.setDrawColor(...LGRAY); doc.setLineWidth(0.3);
