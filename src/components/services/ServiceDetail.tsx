@@ -41,7 +41,7 @@ const categories = [
         features: [
           "AI readiness assessment",
           "Custom opportunity mapping",
-          "90-day implementation roadmap",
+          "60-day implementation roadmap",
           "Technology selection guidance",
           "Team AI upskilling plan",
           "Ongoing quarterly strategy reviews",
@@ -79,7 +79,7 @@ const categories = [
         outcomes: [
           { icon: Clock, value: "< 1 sec", desc: "Average response to customer queries" },
           { icon: TrendingUp, value: "+67%", desc: "Average increase in qualified leads" },
-          { icon: DollarSign, value: "R180K/yr", desc: "Average annual support cost saved" },
+          { icon: DollarSign, value: "R70K/yr", desc: "Average annual support cost saved" },
         ],
         features: [
           "Natural language understanding",
@@ -198,7 +198,7 @@ const categories = [
           { icon: DollarSign, value: "Automated", desc: "Order, inventory, and fulfilment workflows" },
         ],
         features: [
-          "Shopify, WooCommerce, or custom builds",
+          "Shopify or custom builds",
           "AI product recommendations",
           "Automated order and inventory management",
           "Abandoned cart recovery sequences",
@@ -322,7 +322,7 @@ const categories = [
           { icon: DollarSign, value: "50–70%", desc: "vs. in-house IT team cost" },
         ],
         features: [
-          "Cloud hosting and management (AWS, GCP, Azure)",
+          "Cloud hosting and management (AWS)",
           "Cybersecurity monitoring and threat response",
           "Automated backup and disaster recovery",
           "Microsoft 365 and Google Workspace management",

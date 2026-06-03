@@ -37,12 +37,12 @@ const contentSections = [
   {
     title: "Our Mission",
     content:
-      "To make AI and practical technology accessible to South African businesses — delivering tools and systems that were previously only available to large corporates, at a price that makes sense for growing SMEs.\n\nWe believe every business deserves software that actually fits how it works. Our job is to close the gap between the ambition of local entrepreneurs and the tools available to them.\n\nWe measure our success simply: does the client still use it six months later? That's the bar.",
+      "To make AI and practical technology accessible to South African businesses delivering tools and systems that were previously only available to large corporates, at a price that makes sense for growing SMEs.\n\nWe believe every business deserves software that actually fits how it works. Our job is to close the gap between the ambition of local entrepreneurs and the tools available to them.\n\nWe measure our success simply: does the client still use it six months later? That's the bar.",
   },
   {
     title: "Our Story",
     content:
-      "We started Deluxify in 2024 after watching too many South African businesses run on WhatsApp groups and spreadsheets — not because they wanted to, but because nothing better had been built for them.\n\nWe're based in Bloemfontein and currently a team of four. We've shipped projects for clients in Bloemfontein, Johannesburg, and Cape Town. We're not big yet — but every client we've worked with, we've stayed close to.\n\nWe're early. We're honest about that. And we're building the kind of company we'd want to hire ourselves.",
+      "We started Deluxify in 2022 after watching too many South African businesses run on WhatsApp groups and spreadsheets not because they wanted to, but because nothing better had been built for them.\n\nWe're based in Bloemfontein and currently a team of four. We've shipped projects for clients in Bloemfontein, Johannesburg, and Cape Town. We're not big yet  but every client we've worked with, we've stayed close to.\n\nWe're early. We're honest about that. And we're building the kind of company we'd want to hire ourselves.",
   },
 ];
 
@@ -78,7 +78,7 @@ export function AboutSection() {
             <span className={`font-[family-name:var(--font-caveat)] uppercase text-5xl md:text-6xl ${isLight ? "text-black" : "gradient-text"}`}>Global standards.</span>
           </h1>
           <p className={`text-lg md:text-xl leading-relaxed ${isLight ? "text-black/60" : "text-white/55"}`}>
-            We build practical AI and custom software for South African businesses — the kind of tools
+            We build practical AI and custom software for South African businessesx`` the kind of tools
             that actually get used, not demos that look good in a pitch and break in production.
           </p>
         </motion.div>
@@ -113,7 +113,7 @@ export function AboutSection() {
                     Built in Bloemfontein. Shipped to real clients.
                   </p>
                   <p className="text-sm text-white/60">
-                    We're a small team solving real problems — no fluff, no demos that gather dust.
+                    We're a small team solving real problems no fluff, no demos that gather dust.
                   </p>
                 </div>
                 <Link
