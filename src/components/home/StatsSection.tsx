@@ -24,7 +24,7 @@ function useCountUp(target: number, duration: number, start: boolean) {
 
 const stats = [
   { value: 17, suffix: "", label: "Clients Served", desc: "Real businesses, real results" },
-  { value: 23, suffix: "", label: "Projects Delivered", desc: "Since we launched in 2024" },
+  { value: 23, suffix: "", label: "Projects Delivered", desc: "Since we launched in 2022" },
   { value: 340, suffix: "+", label: "Hours Saved Monthly", desc: "Across all active clients combined" },
   { value: 98, suffix: ".7%", label: "Uptime", desc: "Avg across all systems we maintain" },
 ];

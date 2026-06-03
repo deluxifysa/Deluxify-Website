@@ -32,13 +32,13 @@ const steps = [
 ];
 
 const included = [
-  "1 automation workflow built and deployed",
-  "WhatsApp or email notifications included",
-  "2 rounds of revisions",
-  "30-day support after launch",
-  "Plain-language documentation",
-  "Direct access to the developer building it",
-  "No lock-in — month-to-month or once-off",
+  "60-minute strategy session with our team",
+  "Full review of your current business processes",
+  "Custom automation roadmap for your business",
+  "Plain-language proposal with clear pricing",
+  "Expert recommendations — no jargon",
+  "Direct access to the developer who will build it",
+  "No obligation to proceed after the session",
 ];
 
 export function PricingSection() {
@@ -68,7 +68,7 @@ export function PricingSection() {
             <span className={isLight ? "text-black" : "gradient-text"}>No surprises.</span>
           </h2>
           <p className={`text-lg max-w-2xl mx-auto ${isLight ? "text-black/55" : "text-white/50"}`}>
-            We&apos;re a small team, so our pricing is straightforward. The Starter plan covers most first projects — book a call and we&apos;ll confirm what fits your situation.
+            We&apos;re a small team, so our pricing is straightforward. Every project starts with a R 600 consultation — we map out exactly what to build before you commit to anything.
           </p>
         </AnimatedSection>
 
@@ -121,14 +121,14 @@ export function PricingSection() {
 
               <div className="mb-6">
                 <span className={`text-xs font-bold uppercase tracking-widest ${isLight ? "text-black/50" : "text-[#3FE0D0]"}`}>
-                  Starter Plan
+                  Consultation Fee
                 </span>
                 <div className="flex items-baseline gap-2 mt-2 mb-1">
-                  <span className={`text-4xl sm:text-5xl font-bold ${isLight ? "text-black" : ""}`}>R 8 500</span>
+                  <span className={`text-4xl sm:text-5xl font-bold ${isLight ? "text-black" : ""}`}>R 600</span>
                   <span className={`text-sm ${isLight ? "text-black/40" : "text-white/40"}`}>once-off</span>
                 </div>
                 <p className={`text-sm ${isLight ? "text-black/55" : "text-white/50"}`}>
-                  Perfect for small businesses ready to automate one key process. VAT inclusive.
+                  A focused session to map out exactly what to build and what it will cost. VAT inclusive.
                 </p>
               </div>
 
@@ -144,12 +144,12 @@ export function PricingSection() {
               </div>
 
               <Link href="/book-call" className="btn-primary w-full justify-center text-base py-4 group">
-                Book a Free Call
+                Book Your Consultation
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
 
               <p className={`text-xs text-center mt-4 font-medium ${isLight ? "text-black/70" : "text-white/60"}`}>
-                Need something bigger? Ask us about our Growth (R 22 000) or Scale (custom) plans.
+                Project pricing is quoted after the session — most first builds start from R 8 500.
               </p>
             </div>
             </BorderGlow>

@@ -48,7 +48,7 @@ const testimonials = [
     avatar: "AD",
     avatarUrl: "/avatars/placeholder.jpg",
     rating: 5,
-    quote: "As a small business owner I needed something simple. Deluxify didn't oversell me — they built exactly what I needed and walked me through everything.",
+    quote: "As a small business owner I needed something simple. Deluxify didn't oversell me they built exactly what I needed and walked me through everything.",
     highlight: "Simple, practical, no fluff",
     glowColor: "orange" as const,
   },
@@ -83,7 +83,7 @@ export function TestimonialsSection() {
             <span className="font-[family-name:var(--font-caveat)] text-white uppercase text-4xl md:text-6xl">Actually Say</span>
           </h2>
           <p className="text-white/50 text-lg max-w-2xl mx-auto">
-            Real feedback from real South African business owners — no cherry-picked enterprise logos, just honest results.
+            Real feedback from real South African business owners no cherry-picked enterprise logos, just honest results.
           </p>
         </AnimatedSection>
 
