@@ -13,7 +13,7 @@ const caseStudies = [
       "Deluxify built us a job-tracking system that replaced our WhatsApp chaos. It took two weeks and saved us hours every day. Worth every cent.",
     author: "Lebo Motaung",
     role: "Owner",
-    photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=70",
+    photo: "/portraits/lebo-motaung.jpg",
     stats: [
       { value: "100%", label: "Jobs Tracked Digitally", sub: "Previously managed via WhatsApp" },
       { value: "~3 hrs", label: "Admin Saved Daily", sub: "Built and live in 18 days" },
