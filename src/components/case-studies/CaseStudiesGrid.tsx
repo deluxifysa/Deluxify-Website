@@ -26,7 +26,7 @@ const caseStudies = [
       "I was sceptical at first — we're a small pharmacy, not a tech company. But the inventory automation they set up genuinely changed how we work. Highly recommend.",
     author: "Priya Naidoo",
     role: "Manager",
-    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=70",
+    photo: "/portraits/Priya-Naidoo.jpg",
     stats: [
       { value: "−71%", label: "Stock-out Incidents", sub: "Setup completed in 11 days" },
       { value: "Zero", label: "New Hardware Needed", sub: "Integrated with existing POS" },
@@ -39,7 +39,7 @@ const caseStudies = [
       "They built a driver scheduling tool in under a month. It's not perfect yet but the team is responsive and keeps improving it. Good value for money.",
     author: "Gerhard du Plessis",
     role: "Director",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=70",
+    photo: "/portraits/Gerhard-du-Plessis.jpeg",
     stats: [
       { value: "−65%", label: "Scheduling Time", sub: "12 drivers across multiple routes" },
       { value: "−40%", label: "Driver No-shows", sub: "Via SMS confirmations" },
