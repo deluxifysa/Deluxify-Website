@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { getThemeTokens, formatCurrency, formatDate, getInitials } from "@/lib/crm-utils";
 import { PIPELINE_STAGES, STAGE_META, type Client, type PipelineStage } from "@/types/crm";
 import { Plus, Search, Edit2, Trash2, X, Building2, Mail, Phone, Globe, Users } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 const INDUSTRIES = ["Technology", "Finance", "Healthcare", "Retail", "Education", "Manufacturing", "Media", "Consulting", "Other"];
 const SOURCES    = ["Website", "Referral", "Social Media", "Cold Outreach", "Event", "Partner"];
@@ -59,6 +60,8 @@ export default function CRMPage() {
       setSaving(false);
       return;
     }
+    const label = form.company ? `${form.full_name} — ${form.company}` : form.full_name;
+    void logAudit(edit ? "updated" : "created", "clients", label, edit ? "Client record updated" : "New client added");
     await loadClients();
     setShow(false);
     setSaving(false);
@@ -66,8 +69,11 @@ export default function CRMPage() {
 
   async function handleDelete(id: string) {
     if (!confirm("Delete this client? This cannot be undone.")) return;
+    const client = clients.find((c) => c.id === id);
     await supabase.from("clients").delete().eq("id", id);
     setClients((p) => p.filter((c) => c.id !== id));
+    const label = client ? (client.company ? `${client.full_name} — ${client.company}` : client.full_name) : id;
+    void logAudit("deleted", "clients", label, "Client deleted", id);
   }
 
   const isLight = mounted && theme === "light";

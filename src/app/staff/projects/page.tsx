@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
 import { Plus, Edit2, Trash2, X, Calendar, User, Flag, FileText, AlignLeft, Clock, Tag } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 type ProjectStatus = "planning" | "in-progress" | "review" | "completed";
 type ProjectPriority = "low" | "medium" | "high";
@@ -112,6 +113,14 @@ export default function ProjectsPage() {
     } else {
       await supabase.from("projects").insert(payload);
     }
+    void logAudit(
+      editTarget ? "updated" : "created",
+      "projects",
+      form.title,
+      editTarget
+        ? `Status: ${form.status}, Priority: ${form.priority}`
+        : `New project created — ${form.status}`
+    );
     await loadProjects();
     setShowModal(false);
     setSaving(false);
@@ -119,8 +128,10 @@ export default function ProjectsPage() {
 
   async function handleDelete(id: string) {
     if (!confirm("Delete this project? This cannot be undone.")) return;
+    const project = projects.find((p) => p.id === id);
     await supabase.from("projects").delete().eq("id", id);
     setProjects((prev) => prev.filter((p) => p.id !== id));
+    void logAudit("deleted", "projects", project?.title ?? id, "Project deleted", id);
   }
 
   // ── Drag handlers ──────────────────────────────────────────────
@@ -168,6 +179,7 @@ export default function ProjectsPage() {
       .from("projects")
       .update({ status: newStatus, updated_at: new Date().toISOString() })
       .eq("id", id);
+    void logAudit("updated", "projects", project.title, `Status moved: ${project.status} → ${newStatus}`);
   }
 
   // ── Theme tokens ───────────────────────────────────────────────

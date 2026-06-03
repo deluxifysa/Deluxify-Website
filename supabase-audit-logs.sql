@@ -19,8 +19,8 @@ alter table audit_logs enable row level security;
 drop policy if exists "Staff can read logs"   on audit_logs;
 drop policy if exists "Staff can insert logs" on audit_logs;
 
-create policy "Staff can read logs"   on audit_logs for select using (auth.role() = 'authenticated');
-create policy "Staff can insert logs" on audit_logs for insert with check (auth.role() = 'authenticated');
+create policy "Staff can read logs"   on audit_logs for select using (auth.uid() is not null);
+create policy "Staff can insert logs" on audit_logs for insert with check (auth.uid() is not null);
 
 -- Index for fast queries
 create index if not exists audit_logs_created_at_idx on audit_logs (created_at desc);

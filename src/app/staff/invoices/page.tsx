@@ -18,6 +18,7 @@ import {
   User, CreditCard, StickyNote, Building2,
   Info, Pen, Mail, Eye, Package, Search,
 } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type LineItem = {
@@ -1021,6 +1022,7 @@ export default function InvoicesPage() {
       await supabase.from("invoice_items").delete().eq("invoice_id", edit.id);
       if (lineItems.length > 0)
         await supabase.from("invoice_items").insert(lineItems.map((it,idx) => ({ invoice_id:edit.id, ...it, sort_order:idx })));
+      void logAudit("updated", "invoices", `${edit.invoice_no} — ${resolvedName}`, "Invoice updated");
     } else {
       const { data: settings } = await supabase.from("company_settings").select("*").limit(1).maybeSingle();
       const prefix = settings?.invoice_prefix ?? "INV";
@@ -1082,6 +1084,7 @@ export default function InvoicesPage() {
           ? supabase.from("company_settings").update({ invoice_counter: counter + 1 }).eq("id", settings.id)
           : Promise.resolve(),
       ]);
+      void logAudit("created", "invoices", `${inv.invoice_no} — ${resolvedName}`, "New invoice created");
     }
     await loadAll();
     setView("list");
@@ -1095,6 +1098,7 @@ export default function InvoicesPage() {
     setInvoices(p => p.map(inv => inv.id === id ? { ...inv, status, ...extra } : inv));
 
     const inv = invoices.find(i => i.id === id);
+    if (inv) void logAudit("updated", "invoices", `${inv.invoice_no} — ${inv.client_name}`, `Status changed to ${status}`);
     if (inv) {
       if (status === "paid") {
         // Auto-create a planning project when invoice is marked paid
@@ -1128,10 +1132,12 @@ export default function InvoicesPage() {
   }
 
   async function handleDelete(id: string) {
+    const inv = invoices.find((i) => i.id === id);
     await supabase.from("invoice_items").delete().eq("invoice_id", id);
     await supabase.from("invoices").delete().eq("id", id);
-    setInvoices(p => p.filter(inv => inv.id !== id));
+    setInvoices(p => p.filter(i => i.id !== id));
     setDeleteConfirm(null);
+    void logAudit("deleted", "invoices", inv ? `${inv.invoice_no} — ${inv.client_name}` : id, "Invoice deleted", id);
   }
 
   async function handleDownload(inv: Invoice) {

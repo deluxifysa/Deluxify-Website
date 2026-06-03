@@ -47,7 +47,7 @@ export function LogoStrip() {
             isLight ? "text-black/70" : "text-white/30"
           }`}
         >
-          Trusted by growing South African businesses
+          Trusted integrations powering our clients
         </p>
       </div>
       <LogoLoop

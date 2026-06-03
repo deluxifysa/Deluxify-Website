@@ -84,7 +84,7 @@ export function HeroSection() {
             variants={item}
             className="text-lg md:text-xl max-w-2xl leading-relaxed mb-10 text-balance text-black/55 dark:text-white/60"
           >
-            Deluxify helps South African businesses automate the boring stuff — so your team can focus on what matters. We&apos;re a small team that moves fast and delivers real results.
+            Deluxify helps South African businesses automate the boring stuff so your team can focus on what matters. We&apos;re a small team that moves fast and delivers real results.
           </motion.p>
 
           {/* CTAs */}

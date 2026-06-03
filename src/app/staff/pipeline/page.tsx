@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { getThemeTokens, formatCurrency, getInitials } from "@/lib/crm-utils";
 import { PIPELINE_STAGES, STAGE_META, type Client, type PipelineStage } from "@/types/crm";
 import { Plus, Building2, TrendingUp, Users, DollarSign, Target } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 const STAGE_COLOR: Record<PipelineStage, { dot: string; bar: string; cardBorder: string; cardBorderDark: string; dropLight: string; dropDark: string }> = {
   lead:      { dot: "bg-purple-500", bar: "bg-purple-500",  cardBorder: "border-t-purple-400",  cardBorderDark: "border-t-purple-500",  dropLight: "ring-2 ring-purple-300 bg-purple-50/60",  dropDark: "ring-2 ring-purple-500/40 bg-purple-500/5"  },
@@ -58,8 +59,13 @@ export default function PipelinePage() {
     setOverStage(null);
     setDragId(null);
     if (!clientId || fromStageRef.current === toStage) return;
+    const client = clients.find((c) => c.id === clientId);
     setClients((prev) => prev.map((c) => c.id === clientId ? { ...c, pipeline_stage: toStage } : c));
     await supabase.from("clients").update({ pipeline_stage: toStage }).eq("id", clientId);
+    const label = client
+      ? (client.company ? `${client.full_name} — ${client.company}` : client.full_name)
+      : clientId;
+    void logAudit("updated", "clients", label, `Pipeline stage moved: ${fromStageRef.current} → ${toStage}`);
   }
 
   const isLight = mounted && theme === "light";

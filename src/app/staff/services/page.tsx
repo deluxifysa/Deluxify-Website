@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { getThemeTokens, formatCurrency } from "@/lib/crm-utils";
 import { type Service, BILLING_TYPES, type BillingType } from "@/types/crm";
 import { Plus, Edit2, Trash2, X, Package, ToggleLeft, ToggleRight } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 const CATEGORIES = ["AI", "Development", "Design", "Consulting", "Support", "Marketing", "Other"];
 
@@ -48,6 +49,7 @@ export default function ServicesPage() {
     const payload = { ...form, price: Math.round((form.price || 0) * 100) };
     if (edit) await supabase.from("services").update(payload).eq("id", edit.id);
     else       await supabase.from("services").insert(payload);
+    void logAudit(edit ? "updated" : "created", "services", form.name, edit ? "Service updated" : "New service added");
     await load();
     setShow(false);
     setSaving(false);
@@ -55,13 +57,17 @@ export default function ServicesPage() {
 
   async function handleDelete(id: string) {
     if (!confirm("Delete this service?")) return;
+    const service = services.find((s) => s.id === id);
     await supabase.from("services").delete().eq("id", id);
     setServices((p) => p.filter((s) => s.id !== id));
+    void logAudit("deleted", "services", service?.name ?? id, "Service deleted", id);
   }
 
   async function toggleActive(id: string, current: boolean) {
+    const service = services.find((s) => s.id === id);
     await supabase.from("services").update({ is_active: !current }).eq("id", id);
     setServices((p) => p.map((s) => s.id === id ? { ...s, is_active: !current } : s));
+    void logAudit("updated", "services", service?.name ?? id, current ? "Service deactivated" : "Service activated");
   }
 
   const isLight = mounted && theme === "light";

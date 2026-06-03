@@ -10,6 +10,7 @@ import {
   ToggleLeft, ToggleRight, Edit2, Lock,
   Crown, UserCheck, GraduationCap,
 } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 const DEPARTMENTS = ["Development", "Design", "Sales", "Marketing", "Operations", "Consulting"];
 
@@ -108,6 +109,7 @@ export default function TeamPage() {
     setSaving(true);
     if (edit) await supabase.from("team_members").update(form).eq("id", edit.id);
     else      await supabase.from("team_members").insert(form);
+    void logAudit(edit ? "updated" : "created", "team_members", form.full_name, edit ? "Team member updated" : "New team member added");
     const { data } = await supabase.from("team_members").select("*").order("full_name");
     setMembers(data ?? []);
     setShow(false);
@@ -116,8 +118,10 @@ export default function TeamPage() {
 
   async function toggleActive(id: string, current: boolean) {
     if (!isAdmin) return;
+    const member = members.find((m) => m.id === id);
     await supabase.from("team_members").update({ is_active: !current }).eq("id", id);
     setMembers((p) => p.map((m) => m.id === id ? { ...m, is_active: !current } : m));
+    void logAudit("updated", "team_members", member?.full_name ?? id, current ? "Account deactivated" : "Account activated");
   }
 
   const isLight = mounted && theme === "light";

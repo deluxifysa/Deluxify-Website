@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
 import { Search } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 type Booking = {
   id: string;
@@ -47,10 +48,15 @@ export default function BookingsPage() {
 
   async function updateStatus(id: string, newStatus: string) {
     setUpdating(id);
+    const booking = bookings.find((b) => b.id === id);
     await supabase.from("bookings").update({ status: newStatus }).eq("id", id);
     setBookings((prev) =>
       prev.map((b) => (b.id === id ? { ...b, status: newStatus } : b))
     );
+    const label = booking
+      ? `${booking.name}${booking.company ? ` — ${booking.company}` : ""}`
+      : id;
+    void logAudit("updated", "bookings", label, `Status changed: ${booking?.status ?? "?"} → ${newStatus}`);
     setUpdating(null);
   }
 

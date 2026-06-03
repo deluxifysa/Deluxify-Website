@@ -14,6 +14,7 @@ import {
   ChevronDown, CheckCircle2, AlertCircle, Clock, History,
   Loader2, TrendingUp,
 } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -122,6 +123,12 @@ export default function SubscriptionsPage() {
     } else {
       await supabase.from("subscriptions").insert(payload);
     }
+    void logAudit(
+      edit ? "updated" : "created",
+      "subscriptions",
+      `${form.client_name} — ${form.plan_name}`,
+      edit ? "Subscription updated" : "New subscription added"
+    );
     await load();
     setShowModal(false);
     setSaving(false);
@@ -129,8 +136,10 @@ export default function SubscriptionsPage() {
 
   async function handleDelete(id: string) {
     if (!confirm("Delete this subscription? All payment records will also be removed.")) return;
+    const sub = subs.find((s) => s.id === id);
     await supabase.from("subscriptions").delete().eq("id", id);
     setSubs((p) => p.filter((s) => s.id !== id));
+    void logAudit("deleted", "subscriptions", sub ? `${sub.client_name} — ${sub.plan_name}` : id, "Subscription deleted", id);
   }
 
   // ── Billing action ────────────────────────────────────────────────────────
@@ -201,6 +210,7 @@ export default function SubscriptionsPage() {
       await supabase.from("subscriptions").update({ next_billing_date: next }).eq("id", sub.id);
 
       if (payRec) setPayments((p) => [payRec, ...p]);
+      void logAudit("created", "invoices", `${invoiceNo} — ${sub.client_name}`, `Monthly subscription: ${sub.plan_name} (${fmtMonth(bm)})`);
     }
 
     await load();
@@ -252,10 +262,12 @@ export default function SubscriptionsPage() {
   // ── Mark payment as paid ──────────────────────────────────────────────────
   async function markPaid(payId: string, subId: string) {
     const now = new Date().toISOString();
+    const pay = payments.find((p) => p.id === payId);
     await supabase.from("subscription_payments").update({ status: "paid", paid_at: now }).eq("id", payId);
     await supabase.from("invoices").update({ status: "paid", paid_date: now.slice(0, 10) })
-      .eq("id", payments.find((p) => p.id === payId)?.invoice_id ?? "");
+      .eq("id", pay?.invoice_id ?? "");
     setPayments((p) => p.map((py) => py.id === payId ? { ...py, status: "paid", paid_at: now } : py));
+    void logAudit("updated", "invoices", pay?.invoice_no ?? payId, "Subscription payment marked as paid");
     // refresh
     await load();
   }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
 import { getThemeTokens } from "@/lib/crm-utils";
+import { logAudit } from "@/lib/audit";
 import {
   User, Lock, Mail, Check, AlertCircle,
   Building2, CreditCard, FileText, ScrollText,
@@ -86,6 +87,7 @@ export default function ProfilePage() {
   // Logs
   const [logs,        setLogs]        = useState<AuditLog[]>([]);
   const [logsLoading, setLogsLoading] = useState(false);
+  const [logsError,   setLogsError]   = useState<string | null>(null);
   const [logFilter,   setLogFilter]   = useState<"all" | "created" | "updated" | "deleted">("all");
   const [logSearch,   setLogSearch]   = useState("");
   const [logPage,     setLogPage]     = useState(0);
@@ -126,11 +128,13 @@ export default function ProfilePage() {
 
   async function loadLogs() {
     setLogsLoading(true);
-    const { data } = await supabase
+    setLogsError(null);
+    const { data, error } = await supabase
       .from("audit_logs")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(200);
+    if (error) setLogsError(error.message);
     setLogs(data ?? []);
     setLogsLoading(false);
   }
@@ -197,7 +201,10 @@ export default function ProfilePage() {
     }
 
     if (saveErr) { setCompanyErr(saveErr); setCompanyState("error"); }
-    else setCompanyState("saved");
+    else {
+      setCompanyState("saved");
+      void logAudit("updated", "settings", "Company Settings", "Company settings updated");
+    }
     setTimeout(() => setCompanyState("idle"), 3000);
   }
 
@@ -576,6 +583,7 @@ export default function ProfilePage() {
             clients: "Clients", invoices: "Invoices", projects: "Projects",
             bookings: "Bookings", team_members: "Team", services: "Services",
             content_posts: "Content", settings: "Settings", audit_logs: "Logs",
+            subscriptions: "Subscriptions",
           };
 
           const filtered = logs
@@ -644,6 +652,22 @@ export default function ProfilePage() {
                   Refresh
                 </button>
               </div>
+
+              {/* Error banner */}
+              {logsError && (
+                <div className={`mx-6 mt-4 flex items-start gap-3 px-4 py-3.5 rounded-xl border ${
+                  isLight ? "bg-red-50 border-red-200 text-red-800" : "bg-red-400/8 border-red-400/20 text-red-400"
+                }`}>
+                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-semibold">Could not load audit logs</p>
+                    <p className="text-xs mt-0.5 opacity-75">{logsError}</p>
+                    <p className="text-xs mt-1 opacity-60">
+                      Make sure you have run the <code className="font-mono">supabase-audit-logs.sql</code> migration in your Supabase SQL editor.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Log list */}
               {logsLoading ? (
