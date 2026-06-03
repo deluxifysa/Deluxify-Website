@@ -55,7 +55,7 @@ export function CTASection() {
             </h2>
 
             <p className={`text-lg max-w-2xl mx-auto mb-10 leading-relaxed ${isLight ? "text-black/55" : "text-white/60"}`}>
-              Book a free 30-minute call. We&apos;ll listen, ask questions, and tell you honestly whether we can help — and what it would cost.
+              Book a free 30-minute call. We&apos;ll listen, ask questions, and tell you honestly whether we can help and what it would cost.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

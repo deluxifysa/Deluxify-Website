@@ -32,7 +32,7 @@ const steps = [
 ];
 
 const included = [
-  "60-minute strategy session with our team",
+  "30-minute strategy session with our team",
   "Full review of your current business processes",
   "Custom automation roadmap for your business",
   "Plain-language proposal with clear pricing",
@@ -149,7 +149,7 @@ export function PricingSection() {
               </Link>
 
               <p className={`text-xs text-center mt-4 font-medium ${isLight ? "text-black/70" : "text-white/60"}`}>
-                Project pricing is quoted after the session — most first builds start from R 8 500.
+                Project pricing is quoted after the session.
               </p>
             </div>
             </BorderGlow>
